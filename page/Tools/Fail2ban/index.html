@@ -1,0 +1,1102 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>Fail2ban 工具 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">Fail2ban 工具</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2022-04-22 11:06:41 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Tools/">Tools</a>&nbsp;</li></ul></span><span class="article-tags article-meta-item"><i class="fas fa-tags"></i>&nbsp;<ul><li><a href="/tags/Fail2Ban/">Fail2Ban</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="Fail2ban-工具"><a href="#Fail2ban-工具" class="headerlink" title="Fail2ban 工具"></a>Fail2ban 工具</h1><p>项目地址：<a class="link" target="_blank" rel="noopener" href="https://github.com/fail2ban/fail2ban">https://github.com/fail2ban/fail2ban<i class="fas fa-external-link-alt"></i></a></p><h2 id="Fail2ban-的安装"><a href="#Fail2ban-的安装" class="headerlink" title="Fail2ban 的安装"></a>Fail2ban 的安装</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"># 使用 yum 方式安装
+yum -y install epel-release
+yum -y install fail2ban</code></pre><h2 id="Fail2ban-的配置"><a href="#Fail2ban-的配置" class="headerlink" title="Fail2ban 的配置"></a>Fail2ban 的配置</h2><p>Fail2Ban 配置文件目录</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">&#x2F;etc&#x2F;fail2ban&#x2F;
+├── action.d    # 动作目录
+├── fail2ban.conf    # fail2ban 主配置文件
+├── fail2ban.d    # fail2ban 配置目录
+├── filter.d
+├── jail.conf    # 监禁主配置文件
+├── jail.d    # 监禁配置目录
+├── paths-common.conf
+└── paths-fedora.conf</code></pre><p>复制 Fail2ban 配置文件</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">cp &#x2F;etc&#x2F;fail2ban&#x2F;fail2ban.conf &#x2F;etc&#x2F;fail2ban&#x2F;fail2ban.local
+cp &#x2F;etc&#x2F;fail2ban&#x2F;jail.conf &#x2F;etc&#x2F;fail2ban&#x2F;jail.local
+# 使用修改 *.local 配置文件，将覆盖 *.conf 中的配置。</code></pre><p>启动 Fail2ban 服务</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">systemctl enable --now fail2ban.service</code></pre><p>查看 Fail2ban-client 配置</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fail2ban-client -d
+[&#39;set&#39;, &#39;syslogsocket&#39;, &#39;auto&#39;]
+[&#39;set&#39;, &#39;loglevel&#39;, &#39;INFO&#39;]
+[&#39;set&#39;, &#39;logtarget&#39;, &#39;&#x2F;var&#x2F;log&#x2F;fail2ban.log&#39;]
+[&#39;set&#39;, &#39;dbfile&#39;, &#39;&#x2F;var&#x2F;lib&#x2F;fail2ban&#x2F;fail2ban.sqlite3&#39;]
+[&#39;set&#39;, &#39;dbmaxmatches&#39;, 10]
+[&#39;set&#39;, &#39;dbpurgeage&#39;, &#39;1d&#39;]</code></pre><p>查看 Fail2ban-client 状态</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fail2ban-client status
+Status
+|- Number of jail:	0
+&#96;- Jail list:	</code></pre><h2 id="Fail2ban-的使用"><a href="#Fail2ban-的使用" class="headerlink" title="Fail2ban 的使用"></a>Fail2ban 的使用</h2><h3 id="配置-sshd-拦截规则"><a href="#配置-sshd-拦截规则" class="headerlink" title="配置 sshd 拦截规则"></a>配置 sshd 拦截规则</h3><blockquote><p>当使用 ssh 服务远程本机 10 分钟内连续输入密码失败 3 次，自动封堵 IP 一天。</p></blockquote><p>配置 jail 规则</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">cat &lt;&lt;EOF &gt; &#x2F;etc&#x2F;fail2ban&#x2F;jail.d&#x2F;sshd.conf
+[sshd]
+enabled &#x3D; true
+bantime &#x3D; 1d
+filter &#x3D; sshd
+findtime &#x3D; 10m
+action &#x3D; iptables[name&#x3D;SSH, port&#x3D;ssh, protocol&#x3D;tcp]
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;secure
+maxretry &#x3D; 3
+EOF</code></pre><ul><li>bantime：禁止时间</li><li>findtime：持续时间</li><li>action：应用动作</li><li>logpath：日志文件</li><li>maxretry：最大失败次数</li></ul><p>重新加载配置</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">fail2ban-client reload</code></pre><p>查看 Fail2ban-client 状态</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fail2ban-client status
+Status
+|- Number of jail:	1
+&#96;- Jail list:	sshd
+$ fail2ban-client status sshd
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  &#96;- Journal matches:	_SYSTEMD_UNIT&#x3D;sshd.service + _COMM&#x3D;sshd
+&#96;- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   &#96;- Banned IP list:</code></pre><p>查看禁止的 IP 地址列表</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fail2ban-client status sshd
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	3
+|  &#96;- Journal matches:	_SYSTEMD_UNIT&#x3D;sshd.service + _COMM&#x3D;sshd
+&#96;- Actions
+   |- Currently banned:	1
+   |- Total banned:	1
+   &#96;- Banned IP list:	202.79.173.232</code></pre><p>手动解封 IP 地址</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">fail2ban-client set sshd unbanip 202.79.173.232</code></pre><p>手动封禁 IP 地址</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">fail2ban-client set sshd banip 202.79.173.232</code></pre><h2 id="Fail2ban-配置文件"><a href="#Fail2ban-配置文件" class="headerlink" title="Fail2ban 配置文件"></a>Fail2ban 配置文件</h2><pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"># Fail2Ban z
+#
+# Comments: use &#39;#&#39; for comment lines and &#39;;&#39; (following a space) for inline comments
+#
+# Changes:  in most of the cases you should not modify this
+#           file, but provide customizations in fail2ban.local file, e.g.:
+#
+# [DEFAULT]
+# loglevel &#x3D; DEBUG
+#
+
+[DEFAULT]
+
+# Option: loglevel
+# Notes.: Set the log level output.
+#         CRITICAL
+#         ERROR
+#         WARNING
+#         NOTICE
+#         INFO
+#         DEBUG
+# Values: [ LEVEL ]  Default: INFO
+#
+loglevel &#x3D; INFO
+
+# Option: logtarget
+# Notes.: Set the log target. This could be a file, SYSLOG, STDERR or STDOUT.
+#         Only one log target can be specified.
+#         If you change logtarget from the default value and you are
+#         using logrotate -- also adjust or disable rotation in the
+#         corresponding configuration file
+#         (e.g. &#x2F;etc&#x2F;logrotate.d&#x2F;fail2ban on Debian systems)
+# Values: [ STDOUT | STDERR | SYSLOG | SYSOUT | FILE ]  Default: STDERR
+#
+logtarget &#x3D; &#x2F;var&#x2F;log&#x2F;fail2ban.log
+
+# Option: syslogsocket
+# Notes: Set the syslog socket file. Only used when logtarget is SYSLOG
+#        auto uses platform.system() to determine predefined paths
+# Values: [ auto | FILE ]  Default: auto
+syslogsocket &#x3D; auto
+
+# Option: socket
+# Notes.: Set the socket file. This is used to communicate with the daemon. Do
+#         not remove this file when Fail2ban runs. It will not be possible to
+#         communicate with the server afterwards.
+# Values: [ FILE ]  Default: &#x2F;var&#x2F;run&#x2F;fail2ban&#x2F;fail2ban.sock
+#
+socket &#x3D; &#x2F;var&#x2F;run&#x2F;fail2ban&#x2F;fail2ban.sock
+
+# Option: pidfile
+# Notes.: Set the PID file. This is used to store the process ID of the
+#         fail2ban server.
+# Values: [ FILE ]  Default: &#x2F;var&#x2F;run&#x2F;fail2ban&#x2F;fail2ban.pid
+#
+pidfile &#x3D; &#x2F;var&#x2F;run&#x2F;fail2ban&#x2F;fail2ban.pid
+
+# Options: dbfile
+# Notes.: Set the file for the fail2ban persistent data to be stored.
+#         A value of &quot;:memory:&quot; means database is only stored in memory 
+#         and data is lost when fail2ban is stopped.
+#         A value of &quot;None&quot; disables the database.
+# Values: [ None :memory: FILE ] Default: &#x2F;var&#x2F;lib&#x2F;fail2ban&#x2F;fail2ban.sqlite3
+dbfile &#x3D; &#x2F;var&#x2F;lib&#x2F;fail2ban&#x2F;fail2ban.sqlite3
+
+# Options: dbpurgeage
+# Notes.: Sets age at which bans should be purged from the database
+# Values: [ SECONDS ] Default: 86400 (24hours)
+dbpurgeage &#x3D; 1d
+
+# Options: dbmaxmatches
+# Notes.: Number of matches stored in database per ticket (resolvable via 
+#         tags &lt;ipmatches&gt;&#x2F;&lt;ipjailmatches&gt; in actions)
+# Values: [ INT ] Default: 10
+dbmaxmatches &#x3D; 10
+
+[Definition]
+
+
+[Thread]
+
+# Options: stacksize
+# Notes.: Specifies the stack size (in KiB) to be used for subsequently created threads,
+#         and must be 0 or a positive integer value of at least 32.
+# Values: [ SIZE ] Default: 0 (use platform or configured default)
+#stacksize &#x3D; 0</code></pre><pre class="line-numbers language-ini" data-language="ini"><code class="language-ini">#
+# WARNING: heavily refactored in 0.9.0 release.  Please review and
+#          customize settings for your setup.
+#
+# Changes:  in most of the cases you should not modify this
+#           file, but provide customizations in jail.local file,
+#           or separate .conf files under jail.d&#x2F; directory, e.g.:
+#
+# HOW TO ACTIVATE JAILS:
+#
+# YOU SHOULD NOT MODIFY THIS FILE.
+#
+# It will probably be overwritten or improved in a distribution update.
+#
+# Provide customizations in a jail.local file or a jail.d&#x2F;customisation.local.
+# For example to change the default bantime for all jails and to enable the
+# ssh-iptables jail the following (uncommented) would appear in the .local file.
+# See man 5 jail.conf for details.
+#
+# [DEFAULT]
+# bantime &#x3D; 1h
+#
+# [sshd]
+# enabled &#x3D; true
+#
+# See jail.conf(5) man page for more information
+
+
+
+# Comments: use &#39;#&#39; for comment lines and &#39;;&#39; (following a space) for inline comments
+
+
+[INCLUDES]
+
+#before &#x3D; paths-distro.conf
+before &#x3D; paths-fedora.conf
+
+# The DEFAULT allows a global definition of the options. They can be overridden
+# in each jail afterwards.
+
+[DEFAULT]
+
+#
+# MISCELLANEOUS OPTIONS
+#
+
+# &quot;bantime.increment&quot; allows to use database for searching of previously banned ip&#39;s to increase a 
+# default ban time using special formula, default it is banTime * 1, 2, 4, 8, 16, 32...
+#bantime.increment &#x3D; true
+
+# &quot;bantime.rndtime&quot; is the max number of seconds using for mixing with random time 
+# to prevent &quot;clever&quot; botnets calculate exact time IP can be unbanned again:
+#bantime.rndtime &#x3D; 
+
+# &quot;bantime.maxtime&quot; is the max number of seconds using the ban time can reach (doesn&#39;t grow further)
+#bantime.maxtime &#x3D; 
+
+# &quot;bantime.factor&quot; is a coefficient to calculate exponent growing of the formula or common multiplier,
+# default value of factor is 1 and with default value of formula, the ban time 
+# grows by 1, 2, 4, 8, 16 ...
+#bantime.factor &#x3D; 1
+
+# &quot;bantime.formula&quot; used by default to calculate next value of ban time, default value below,
+# the same ban time growing will be reached by multipliers 1, 2, 4, 8, 16, 32...
+#bantime.formula &#x3D; ban.Time * (1&lt;&lt;(ban.Count if ban.Count&lt;20 else 20)) * banFactor
+#
+# more aggressive example of formula has the same values only for factor &quot;2.0 &#x2F; 2.885385&quot; :
+#bantime.formula &#x3D; ban.Time * math.exp(float(ban.Count+1)*banFactor)&#x2F;math.exp(1*banFactor)
+
+# &quot;bantime.multipliers&quot; used to calculate next value of ban time instead of formula, coresponding 
+# previously ban count and given &quot;bantime.factor&quot; (for multipliers default is 1);
+# following example grows ban time by 1, 2, 4, 8, 16 ... and if last ban count greater as multipliers count, 
+# always used last multiplier (64 in example), for factor &#39;1&#39; and original ban time 600 - 10.6 hours
+#bantime.multipliers &#x3D; 1 2 4 8 16 32 64
+# following example can be used for small initial ban time (bantime&#x3D;60) - it grows more aggressive at begin,
+# for bantime&#x3D;60 the multipliers are minutes and equal: 1 min, 5 min, 30 min, 1 hour, 5 hour, 12 hour, 1 day, 2 day
+#bantime.multipliers &#x3D; 1 5 30 60 300 720 1440 2880
+
+# &quot;bantime.overalljails&quot; (if true) specifies the search of IP in the database will be executed 
+# cross over all jails, if false (dafault), only current jail of the ban IP will be searched
+#bantime.overalljails &#x3D; false
+
+# --------------------
+
+# &quot;ignoreself&quot; specifies whether the local resp. own IP addresses should be ignored
+# (default is true). Fail2ban will not ban a host which matches such addresses.
+#ignoreself &#x3D; true
+
+# &quot;ignoreip&quot; can be a list of IP addresses, CIDR masks or DNS hosts. Fail2ban
+# will not ban a host which matches an address in this list. Several addresses
+# can be defined using space (and&#x2F;or comma) separator.
+#ignoreip &#x3D; 127.0.0.1&#x2F;8 ::1
+
+# External command that will take an tagged arguments to ignore, e.g. &lt;ip&gt;,
+# and return true if the IP is to be ignored. False otherwise.
+#
+# ignorecommand &#x3D; &#x2F;path&#x2F;to&#x2F;command &lt;ip&gt;
+ignorecommand &#x3D;
+
+# &quot;bantime&quot; is the number of seconds that a host is banned.
+bantime  &#x3D; 10m
+
+# A host is banned if it has generated &quot;maxretry&quot; during the last &quot;findtime&quot;
+# seconds.
+findtime  &#x3D; 10m
+
+# &quot;maxretry&quot; is the number of failures before a host get banned.
+maxretry &#x3D; 5
+
+# &quot;maxmatches&quot; is the number of matches stored in ticket (resolvable via tag &lt;matches&gt; in actions).
+maxmatches &#x3D; %(maxretry)s
+
+# &quot;backend&quot; specifies the backend used to get files modification.
+# Available options are &quot;pyinotify&quot;, &quot;gamin&quot;, &quot;polling&quot;, &quot;systemd&quot; and &quot;auto&quot;.
+# This option can be overridden in each jail as well.
+#
+# pyinotify: requires pyinotify (a file alteration monitor) to be installed.
+#              If pyinotify is not installed, Fail2ban will use auto.
+# gamin:     requires Gamin (a file alteration monitor) to be installed.
+#              If Gamin is not installed, Fail2ban will use auto.
+# polling:   uses a polling algorithm which does not require external libraries.
+# systemd:   uses systemd python library to access the systemd journal.
+#              Specifying &quot;logpath&quot; is not valid for this backend.
+#              See &quot;journalmatch&quot; in the jails associated filter config
+# auto:      will try to use the following backends, in order:
+#              pyinotify, gamin, polling.
+#
+# Note: if systemd backend is chosen as the default but you enable a jail
+#       for which logs are present only in its own log files, specify some other
+#       backend for that jail (e.g. polling) and provide empty value for
+#       journalmatch. See https:&#x2F;&#x2F;github.com&#x2F;fail2ban&#x2F;fail2ban&#x2F;issues&#x2F;959#issuecomment-74901200
+backend &#x3D; auto
+
+# &quot;usedns&quot; specifies if jails should trust hostnames in logs,
+#   warn when DNS lookups are performed, or ignore all hostnames in logs
+#
+# yes:   if a hostname is encountered, a DNS lookup will be performed.
+# warn:  if a hostname is encountered, a DNS lookup will be performed,
+#        but it will be logged as a warning.
+# no:    if a hostname is encountered, will not be used for banning,
+#        but it will be logged as info.
+# raw:   use raw value (no hostname), allow use it for no-host filters&#x2F;actions (example user)
+usedns &#x3D; warn
+
+# &quot;logencoding&quot; specifies the encoding of the log files handled by the jail
+#   This is used to decode the lines from the log file.
+#   Typical examples:  &quot;ascii&quot;, &quot;utf-8&quot;
+#
+#   auto:   will use the system locale setting
+logencoding &#x3D; auto
+
+# &quot;enabled&quot; enables the jails.
+#  By default all jails are disabled, and it should stay this way.
+#  Enable only relevant to your setup jails in your .local or jail.d&#x2F;*.conf
+#
+# true:  jail will be enabled and log files will get monitored for changes
+# false: jail is not enabled
+enabled &#x3D; false
+
+
+# &quot;mode&quot; defines the mode of the filter (see corresponding filter implementation for more info).
+mode &#x3D; normal
+
+# &quot;filter&quot; defines the filter to use by the jail.
+#  By default jails have names matching their filter name
+#
+filter &#x3D; %(__name__)s[mode&#x3D;%(mode)s]
+
+
+#
+# ACTIONS
+#
+
+# Some options used for actions
+
+# Destination email address used solely for the interpolations in
+# jail.&#123;conf,local,d&#x2F;*&#125; configuration files.
+destemail &#x3D; root@localhost
+
+# Sender email address used solely for some actions
+sender &#x3D; root@&lt;fq-hostname&gt;
+
+# E-mail action. Since 0.8.1 Fail2Ban uses sendmail MTA for the
+# mailing. Change mta configuration parameter to mail if you want to
+# revert to conventional &#39;mail&#39;.
+mta &#x3D; sendmail
+
+# Default protocol
+protocol &#x3D; tcp
+
+# Specify chain where jumps would need to be added in ban-actions expecting parameter chain
+chain &#x3D; &lt;known&#x2F;chain&gt;
+
+# Ports to be banned
+# Usually should be overridden in a particular jail
+port &#x3D; 0:65535
+
+# Format of user-agent https:&#x2F;&#x2F;tools.ietf.org&#x2F;html&#x2F;rfc7231#section-5.5.3
+fail2ban_agent &#x3D; Fail2Ban&#x2F;%(fail2ban_version)s
+
+#
+# Action shortcuts. To be used to define action parameter
+
+# Default banning action (e.g. iptables, iptables-new,
+# iptables-multiport, shorewall, etc) It is used to define
+# action_* variables. Can be overridden globally or per
+# section within jail.local file
+banaction &#x3D; iptables-multiport
+banaction_allports &#x3D; iptables-allports
+
+# The simplest action to take: ban only
+action_ &#x3D; %(banaction)s[port&#x3D;&quot;%(port)s&quot;, protocol&#x3D;&quot;%(protocol)s&quot;, chain&#x3D;&quot;%(chain)s&quot;]
+
+# ban &amp; send an e-mail with whois report to the destemail.
+action_mw &#x3D; %(action_)s
+            %(mta)s-whois[sender&#x3D;&quot;%(sender)s&quot;, dest&#x3D;&quot;%(destemail)s&quot;, protocol&#x3D;&quot;%(protocol)s&quot;, chain&#x3D;&quot;%(chain)s&quot;]
+
+# ban &amp; send an e-mail with whois report and relevant log lines
+# to the destemail.
+action_mwl &#x3D; %(action_)s
+             %(mta)s-whois-lines[sender&#x3D;&quot;%(sender)s&quot;, dest&#x3D;&quot;%(destemail)s&quot;, logpath&#x3D;&quot;%(logpath)s&quot;, chain&#x3D;&quot;%(chain)s&quot;]
+
+# See the IMPORTANT note in action.d&#x2F;xarf-login-attack for when to use this action
+#
+# ban &amp; send a xarf e-mail to abuse contact of IP address and include relevant log lines
+# to the destemail.
+action_xarf &#x3D; %(action_)s
+             xarf-login-attack[service&#x3D;%(__name__)s, sender&#x3D;&quot;%(sender)s&quot;, logpath&#x3D;&quot;%(logpath)s&quot;, port&#x3D;&quot;%(port)s&quot;]
+
+# ban IP on CloudFlare &amp; send an e-mail with whois report and relevant log lines
+# to the destemail.
+action_cf_mwl &#x3D; cloudflare[cfuser&#x3D;&quot;%(cfemail)s&quot;, cftoken&#x3D;&quot;%(cfapikey)s&quot;]
+                %(mta)s-whois-lines[sender&#x3D;&quot;%(sender)s&quot;, dest&#x3D;&quot;%(destemail)s&quot;, logpath&#x3D;&quot;%(logpath)s&quot;, chain&#x3D;&quot;%(chain)s&quot;]
+
+# Report block via blocklist.de fail2ban reporting service API
+# 
+# See the IMPORTANT note in action.d&#x2F;blocklist_de.conf for when to use this action.
+# Specify expected parameters in file action.d&#x2F;blocklist_de.local or if the interpolation
+# &#96;action_blocklist_de&#96; used for the action, set value of &#96;blocklist_de_apikey&#96;
+# in your &#96;jail.local&#96; globally (section [DEFAULT]) or per specific jail section (resp. in 
+# corresponding jail.d&#x2F;my-jail.local file).
+#
+action_blocklist_de  &#x3D; blocklist_de[email&#x3D;&quot;%(sender)s&quot;, service&#x3D;&quot;%(__name__)s&quot;, apikey&#x3D;&quot;%(blocklist_de_apikey)s&quot;, agent&#x3D;&quot;%(fail2ban_agent)s&quot;]
+
+# Report ban via badips.com, and use as blacklist
+#
+# See BadIPsAction docstring in config&#x2F;action.d&#x2F;badips.py for
+# documentation for this action.
+#
+# NOTE: This action relies on banaction being present on start and therefore
+# should be last action defined for a jail.
+#
+action_badips &#x3D; badips.py[category&#x3D;&quot;%(__name__)s&quot;, banaction&#x3D;&quot;%(banaction)s&quot;, agent&#x3D;&quot;%(fail2ban_agent)s&quot;]
+#
+# Report ban via badips.com (uses action.d&#x2F;badips.conf for reporting only)
+#
+action_badips_report &#x3D; badips[category&#x3D;&quot;%(__name__)s&quot;, agent&#x3D;&quot;%(fail2ban_agent)s&quot;]
+
+# Report ban via abuseipdb.com.
+#
+# See action.d&#x2F;abuseipdb.conf for usage example and details.
+#
+action_abuseipdb &#x3D; abuseipdb
+
+# Choose default action.  To change, just override value of &#39;action&#39; with the
+# interpolation to the chosen action shortcut (e.g.  action_mw, action_mwl, etc) in jail.local
+# globally (section [DEFAULT]) or per specific section
+action &#x3D; %(action_)s
+
+
+#
+# JAILS
+#
+
+#
+# SSH servers
+#
+
+[sshd]
+
+# To use more aggressive sshd modes set filter parameter &quot;mode&quot; in jail.local:
+# normal (default), ddos, extra or aggressive (combines all).
+# See &quot;tests&#x2F;files&#x2F;logs&#x2F;sshd&quot; or &quot;filter.d&#x2F;sshd.conf&quot; for usage example and details.
+#mode   &#x3D; normal
+port    &#x3D; ssh
+logpath &#x3D; %(sshd_log)s
+backend &#x3D; %(sshd_backend)s
+
+
+[dropbear]
+
+port     &#x3D; ssh
+logpath  &#x3D; %(dropbear_log)s
+backend  &#x3D; %(dropbear_backend)s
+
+
+[selinux-ssh]
+
+port     &#x3D; ssh
+logpath  &#x3D; %(auditd_log)s
+
+
+#
+# HTTP servers
+#
+
+[apache-auth]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+
+
+[apache-badbots]
+# Ban hosts which agent identifies spammer robots crawling the web
+# for email addresses. The mail outputs are buffered.
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_access_log)s
+bantime  &#x3D; 48h
+maxretry &#x3D; 1
+
+
+[apache-noscript]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+
+
+[apache-overflows]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+maxretry &#x3D; 2
+
+
+[apache-nohome]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+maxretry &#x3D; 2
+
+
+[apache-botsearch]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+maxretry &#x3D; 2
+
+
+[apache-fakegooglebot]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_access_log)s
+maxretry &#x3D; 1
+ignorecommand &#x3D; %(ignorecommands_dir)s&#x2F;apache-fakegooglebot &lt;ip&gt;
+
+
+[apache-modsecurity]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(apache_error_log)s
+maxretry &#x3D; 2
+
+
+[apache-shellshock]
+
+port    &#x3D; http,https
+logpath &#x3D; %(apache_error_log)s
+maxretry &#x3D; 1
+
+
+[openhab-auth]
+
+filter &#x3D; openhab
+banaction &#x3D; %(banaction_allports)s
+logpath &#x3D; &#x2F;opt&#x2F;openhab&#x2F;logs&#x2F;request.log
+
+
+[nginx-http-auth]
+
+port    &#x3D; http,https
+logpath &#x3D; %(nginx_error_log)s
+
+# To use &#39;nginx-limit-req&#39; jail you should have &#96;ngx_http_limit_req_module&#96; 
+# and define &#96;limit_req&#96; and &#96;limit_req_zone&#96; as described in nginx documentation
+# http:&#x2F;&#x2F;nginx.org&#x2F;en&#x2F;docs&#x2F;http&#x2F;ngx_http_limit_req_module.html
+# or for example see in &#39;config&#x2F;filter.d&#x2F;nginx-limit-req.conf&#39;
+[nginx-limit-req]
+port    &#x3D; http,https
+logpath &#x3D; %(nginx_error_log)s
+
+[nginx-botsearch]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(nginx_error_log)s
+maxretry &#x3D; 2
+
+
+# Ban attackers that try to use PHP&#39;s URL-fopen() functionality
+# through GET&#x2F;POST variables. - Experimental, with more than a year
+# of usage in production environments.
+
+[php-url-fopen]
+
+port    &#x3D; http,https
+logpath &#x3D; %(nginx_access_log)s
+          %(apache_access_log)s
+
+
+[suhosin]
+
+port    &#x3D; http,https
+logpath &#x3D; %(suhosin_log)s
+
+
+[lighttpd-auth]
+# Same as above for Apache&#39;s mod_auth
+# It catches wrong authentifications
+port    &#x3D; http,https
+logpath &#x3D; %(lighttpd_error_log)s
+
+
+#
+# Webmail and groupware servers
+#
+
+[roundcube-auth]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(roundcube_errors_log)s
+# Use following line in your jail.local if roundcube logs to journal.
+#backend &#x3D; %(syslog_backend)s
+
+
+[openwebmail]
+
+port     &#x3D; http,https
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;openwebmail.log
+
+
+[horde]
+
+port     &#x3D; http,https
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;horde&#x2F;horde.log
+
+
+[groupoffice]
+
+port     &#x3D; http,https
+logpath  &#x3D; &#x2F;home&#x2F;groupoffice&#x2F;log&#x2F;info.log
+
+
+[sogo-auth]
+# Monitor SOGo groupware server
+# without proxy this would be:
+# port    &#x3D; 20000
+port     &#x3D; http,https
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;sogo&#x2F;sogo.log
+
+
+[tine20]
+
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;tine20&#x2F;tine20.log
+port     &#x3D; http,https
+
+
+#
+# Web Applications
+#
+#
+
+[drupal-auth]
+
+port     &#x3D; http,https
+logpath  &#x3D; %(syslog_daemon)s
+backend  &#x3D; %(syslog_backend)s
+
+[guacamole]
+
+port     &#x3D; http,https
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;tomcat*&#x2F;catalina.out
+#logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;guacamole.log
+
+[monit]
+#Ban clients brute-forcing the monit gui login
+port &#x3D; 2812
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;monit
+           &#x2F;var&#x2F;log&#x2F;monit.log
+
+
+[webmin-auth]
+
+port    &#x3D; 10000
+logpath &#x3D; %(syslog_authpriv)s
+backend &#x3D; %(syslog_backend)s
+
+
+[froxlor-auth]
+
+port    &#x3D; http,https
+logpath  &#x3D; %(syslog_authpriv)s
+backend  &#x3D; %(syslog_backend)s
+
+
+#
+# HTTP Proxy servers
+#
+#
+
+[squid]
+
+port     &#x3D;  80,443,3128,8080
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;squid&#x2F;access.log
+
+
+[3proxy]
+
+port    &#x3D; 3128
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;3proxy.log
+
+
+#
+# FTP servers
+#
+
+
+[proftpd]
+
+port     &#x3D; ftp,ftp-data,ftps,ftps-data
+logpath  &#x3D; %(proftpd_log)s
+backend  &#x3D; %(proftpd_backend)s
+
+
+[pure-ftpd]
+
+port     &#x3D; ftp,ftp-data,ftps,ftps-data
+logpath  &#x3D; %(pureftpd_log)s
+backend  &#x3D; %(pureftpd_backend)s
+
+
+[gssftpd]
+
+port     &#x3D; ftp,ftp-data,ftps,ftps-data
+logpath  &#x3D; %(syslog_daemon)s
+backend  &#x3D; %(syslog_backend)s
+
+
+[wuftpd]
+
+port     &#x3D; ftp,ftp-data,ftps,ftps-data
+logpath  &#x3D; %(wuftpd_log)s
+backend  &#x3D; %(wuftpd_backend)s
+
+
+[vsftpd]
+# or overwrite it in jails.local to be
+# logpath &#x3D; %(syslog_authpriv)s
+# if you want to rely on PAM failed login attempts
+# vsftpd&#39;s failregex should match both of those formats
+port     &#x3D; ftp,ftp-data,ftps,ftps-data
+logpath  &#x3D; %(vsftpd_log)s
+
+
+#
+# Mail servers
+#
+
+# ASSP SMTP Proxy Jail
+[assp]
+
+port     &#x3D; smtp,465,submission
+logpath  &#x3D; &#x2F;root&#x2F;path&#x2F;to&#x2F;assp&#x2F;logs&#x2F;maillog.txt
+
+
+[courier-smtp]
+
+port     &#x3D; smtp,465,submission
+logpath  &#x3D; %(syslog_mail)s
+backend  &#x3D; %(syslog_backend)s
+
+
+[postfix]
+# To use another modes set filter parameter &quot;mode&quot; in jail.local:
+mode    &#x3D; more
+port    &#x3D; smtp,465,submission
+logpath &#x3D; %(postfix_log)s
+backend &#x3D; %(postfix_backend)s
+
+
+[postfix-rbl]
+
+filter   &#x3D; postfix[mode&#x3D;rbl]
+port     &#x3D; smtp,465,submission
+logpath  &#x3D; %(postfix_log)s
+backend  &#x3D; %(postfix_backend)s
+maxretry &#x3D; 1
+
+
+[sendmail-auth]
+
+port    &#x3D; submission,465,smtp
+logpath &#x3D; %(syslog_mail)s
+backend &#x3D; %(syslog_backend)s
+
+
+[sendmail-reject]
+# To use more aggressive modes set filter parameter &quot;mode&quot; in jail.local:
+# normal (default), extra or aggressive
+# See &quot;tests&#x2F;files&#x2F;logs&#x2F;sendmail-reject&quot; or &quot;filter.d&#x2F;sendmail-reject.conf&quot; for usage example and details.
+#mode    &#x3D; normal
+port     &#x3D; smtp,465,submission
+logpath  &#x3D; %(syslog_mail)s
+backend  &#x3D; %(syslog_backend)s
+
+
+[qmail-rbl]
+
+filter  &#x3D; qmail
+port    &#x3D; smtp,465,submission
+logpath &#x3D; &#x2F;service&#x2F;qmail&#x2F;log&#x2F;main&#x2F;current
+
+
+# dovecot defaults to logging to the mail syslog facility
+# but can be set by syslog_facility in the dovecot configuration.
+[dovecot]
+
+port    &#x3D; pop3,pop3s,imap,imaps,submission,465,sieve
+logpath &#x3D; %(dovecot_log)s
+backend &#x3D; %(dovecot_backend)s
+
+
+[sieve]
+
+port   &#x3D; smtp,465,submission
+logpath &#x3D; %(dovecot_log)s
+backend &#x3D; %(dovecot_backend)s
+
+
+[solid-pop3d]
+
+port    &#x3D; pop3,pop3s
+logpath &#x3D; %(solidpop3d_log)s
+
+
+[exim]
+# see filter.d&#x2F;exim.conf for further modes supported from filter:
+#mode &#x3D; normal
+port   &#x3D; smtp,465,submission
+logpath &#x3D; %(exim_main_log)s
+
+
+[exim-spam]
+
+port   &#x3D; smtp,465,submission
+logpath &#x3D; %(exim_main_log)s
+
+
+[kerio]
+
+port    &#x3D; imap,smtp,imaps,465
+logpath &#x3D; &#x2F;opt&#x2F;kerio&#x2F;mailserver&#x2F;store&#x2F;logs&#x2F;security.log
+
+
+#
+# Mail servers authenticators: might be used for smtp,ftp,imap servers, so
+# all relevant ports get banned
+#
+
+[courier-auth]
+
+port     &#x3D; smtp,465,submission,imap,imaps,pop3,pop3s
+logpath  &#x3D; %(syslog_mail)s
+backend  &#x3D; %(syslog_backend)s
+
+
+[postfix-sasl]
+
+filter   &#x3D; postfix[mode&#x3D;auth]
+port     &#x3D; smtp,465,submission,imap,imaps,pop3,pop3s
+# You might consider monitoring &#x2F;var&#x2F;log&#x2F;mail.warn instead if you are
+# running postfix since it would provide the same log lines at the
+# &quot;warn&quot; level but overall at the smaller filesize.
+logpath  &#x3D; %(postfix_log)s
+backend  &#x3D; %(postfix_backend)s
+
+
+[perdition]
+
+port   &#x3D; imap,imaps,pop3,pop3s
+logpath &#x3D; %(syslog_mail)s
+backend &#x3D; %(syslog_backend)s
+
+
+[squirrelmail]
+
+port &#x3D; smtp,465,submission,imap,imap2,imaps,pop3,pop3s,http,https,socks
+logpath &#x3D; &#x2F;var&#x2F;lib&#x2F;squirrelmail&#x2F;prefs&#x2F;squirrelmail_access_log
+
+
+[cyrus-imap]
+
+port   &#x3D; imap,imaps
+logpath &#x3D; %(syslog_mail)s
+backend &#x3D; %(syslog_backend)s
+
+
+[uwimap-auth]
+
+port   &#x3D; imap,imaps
+logpath &#x3D; %(syslog_mail)s
+backend &#x3D; %(syslog_backend)s
+
+
+#
+#
+# DNS servers
+#
+
+
+# !!! WARNING !!!
+#   Since UDP is connection-less protocol, spoofing of IP and imitation
+#   of illegal actions is way too simple.  Thus enabling of this filter
+#   might provide an easy way for implementing a DoS against a chosen
+#   victim. See
+#    http:&#x2F;&#x2F;nion.modprobe.de&#x2F;blog&#x2F;archives&#x2F;690-fail2ban-+-dns-fail.html
+#   Please DO NOT USE this jail unless you know what you are doing.
+#
+# IMPORTANT: see filter.d&#x2F;named-refused for instructions to enable logging
+# This jail blocks UDP traffic for DNS requests.
+# [named-refused-udp]
+#
+# filter   &#x3D; named-refused
+# port     &#x3D; domain,953
+# protocol &#x3D; udp
+# logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;named&#x2F;security.log
+
+# IMPORTANT: see filter.d&#x2F;named-refused for instructions to enable logging
+# This jail blocks TCP traffic for DNS requests.
+
+[named-refused]
+
+port     &#x3D; domain,953
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;named&#x2F;security.log
+
+
+[nsd]
+
+port     &#x3D; 53
+action_  &#x3D; %(default&#x2F;action_)s[name&#x3D;%(__name__)s-tcp, protocol&#x3D;&quot;tcp&quot;]
+           %(default&#x2F;action_)s[name&#x3D;%(__name__)s-udp, protocol&#x3D;&quot;udp&quot;]
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;nsd.log
+
+
+#
+# Miscellaneous
+#
+
+[asterisk]
+
+port     &#x3D; 5060,5061
+action_  &#x3D; %(default&#x2F;action_)s[name&#x3D;%(__name__)s-tcp, protocol&#x3D;&quot;tcp&quot;]
+           %(default&#x2F;action_)s[name&#x3D;%(__name__)s-udp, protocol&#x3D;&quot;udp&quot;]
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;asterisk&#x2F;messages
+maxretry &#x3D; 10
+
+
+[freeswitch]
+
+port     &#x3D; 5060,5061
+action_  &#x3D; %(default&#x2F;action_)s[name&#x3D;%(__name__)s-tcp, protocol&#x3D;&quot;tcp&quot;]
+           %(default&#x2F;action_)s[name&#x3D;%(__name__)s-udp, protocol&#x3D;&quot;udp&quot;]
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;freeswitch.log
+maxretry &#x3D; 10
+
+
+# enable adminlog; it will log to a file inside znc&#39;s directory by default.
+[znc-adminlog]
+
+port     &#x3D; 6667
+logpath  &#x3D; &#x2F;var&#x2F;lib&#x2F;znc&#x2F;moddata&#x2F;adminlog&#x2F;znc.log
+
+
+# To log wrong MySQL access attempts add to &#x2F;etc&#x2F;my.cnf in [mysqld] or
+# equivalent section:
+# log-warnings &#x3D; 2
+#
+# for syslog (daemon facility)
+# [mysqld_safe]
+# syslog
+#
+# for own logfile
+# [mysqld]
+# log-error&#x3D;&#x2F;var&#x2F;log&#x2F;mysqld.log
+[mysqld-auth]
+
+port     &#x3D; 3306
+logpath  &#x3D; %(mysql_log)s
+backend  &#x3D; %(mysql_backend)s
+
+
+# Log wrong MongoDB auth (for details see filter &#39;filter.d&#x2F;mongodb-auth.conf&#39;)
+[mongodb-auth]
+# change port when running with &quot;--shardsvr&quot; or &quot;--configsvr&quot; runtime operation
+port     &#x3D; 27017
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;mongodb&#x2F;mongodb.log
+
+
+# Jail for more extended banning of persistent abusers
+# !!! WARNINGS !!!
+# 1. Make sure that your loglevel specified in fail2ban.conf&#x2F;.local
+#    is not at DEBUG level -- which might then cause fail2ban to fall into
+#    an infinite loop constantly feeding itself with non-informative lines
+# 2. Increase dbpurgeage defined in fail2ban.conf to e.g. 648000 (7.5 days)
+#    to maintain entries for failed logins for sufficient amount of time
+[recidive]
+
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;fail2ban.log
+banaction &#x3D; %(banaction_allports)s
+bantime  &#x3D; 1w
+findtime &#x3D; 1d
+
+
+# Generic filter for PAM. Has to be used with action which bans all
+# ports such as iptables-allports, shorewall
+
+[pam-generic]
+# pam-generic filter can be customized to monitor specific subset of &#39;tty&#39;s
+banaction &#x3D; %(banaction_allports)s
+logpath  &#x3D; %(syslog_authpriv)s
+backend  &#x3D; %(syslog_backend)s
+
+
+[xinetd-fail]
+
+banaction &#x3D; iptables-multiport-log
+logpath   &#x3D; %(syslog_daemon)s
+backend   &#x3D; %(syslog_backend)s
+maxretry  &#x3D; 2
+
+
+# stunnel - need to set port for this
+[stunnel]
+
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;stunnel4&#x2F;stunnel.log
+
+
+[ejabberd-auth]
+
+port    &#x3D; 5222
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;ejabberd&#x2F;ejabberd.log
+
+
+[counter-strike]
+
+logpath &#x3D; &#x2F;opt&#x2F;cstrike&#x2F;logs&#x2F;L[0-9]*.log
+tcpport &#x3D; 27030,27031,27032,27033,27034,27035,27036,27037,27038,27039
+udpport &#x3D; 1200,27000,27001,27002,27003,27004,27005,27006,27007,27008,27009,27010,27011,27012,27013,27014,27015
+action_  &#x3D; %(default&#x2F;action_)s[name&#x3D;%(__name__)s-tcp, port&#x3D;&quot;%(tcpport)s&quot;, protocol&#x3D;&quot;tcp&quot;]
+           %(default&#x2F;action_)s[name&#x3D;%(__name__)s-udp, port&#x3D;&quot;%(udpport)s&quot;, protocol&#x3D;&quot;udp&quot;]
+
+[softethervpn]
+port     &#x3D; 500,4500
+protocol &#x3D; udp
+logpath  &#x3D; &#x2F;usr&#x2F;local&#x2F;vpnserver&#x2F;security_log&#x2F;*&#x2F;sec.log
+
+[gitlab]
+port    &#x3D; http,https
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;gitlab&#x2F;gitlab-rails&#x2F;application.log
+
+[grafana]
+port    &#x3D; http,https
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;grafana&#x2F;grafana.log
+
+[bitwarden]
+port    &#x3D; http,https
+logpath &#x3D; &#x2F;home&#x2F;*&#x2F;bwdata&#x2F;logs&#x2F;identity&#x2F;Identity&#x2F;log.txt
+
+[centreon]
+port    &#x3D; http,https
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;centreon&#x2F;login.log
+
+# consider low maxretry and a long bantime
+# nobody except your own Nagios server should ever probe nrpe
+[nagios]
+
+logpath  &#x3D; %(syslog_daemon)s     ; nrpe.cfg may define a different log_facility
+backend  &#x3D; %(syslog_backend)s
+maxretry &#x3D; 1
+
+
+[oracleims]
+# see &quot;oracleims&quot; filter file for configuration requirement for Oracle IMS v6 and above
+logpath &#x3D; &#x2F;opt&#x2F;sun&#x2F;comms&#x2F;messaging64&#x2F;log&#x2F;mail.log_current
+banaction &#x3D; %(banaction_allports)s
+
+[directadmin]
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;directadmin&#x2F;login.log
+port &#x3D; 2222
+
+[portsentry]
+logpath  &#x3D; &#x2F;var&#x2F;lib&#x2F;portsentry&#x2F;portsentry.history
+maxretry &#x3D; 1
+
+[pass2allow-ftp]
+# this pass2allow example allows FTP traffic after successful HTTP authentication
+port         &#x3D; ftp,ftp-data,ftps,ftps-data
+# knocking_url variable must be overridden to some secret value in jail.local
+knocking_url &#x3D; &#x2F;knocking&#x2F;
+filter       &#x3D; apache-pass[knocking_url&#x3D;&quot;%(knocking_url)s&quot;]
+# access log of the website with HTTP auth
+logpath      &#x3D; %(apache_access_log)s
+blocktype    &#x3D; RETURN
+returntype   &#x3D; DROP
+action       &#x3D; %(action_)s[blocktype&#x3D;%(blocktype)s, returntype&#x3D;%(returntype)s,
+                        actionstart_on_demand&#x3D;false, actionrepair_on_unban&#x3D;true]
+bantime      &#x3D; 1h
+maxretry     &#x3D; 1
+findtime     &#x3D; 1
+
+
+[murmur]
+# AKA mumble-server
+port     &#x3D; 64738
+action_  &#x3D; %(default&#x2F;action_)s[name&#x3D;%(__name__)s-tcp, protocol&#x3D;&quot;tcp&quot;]
+           %(default&#x2F;action_)s[name&#x3D;%(__name__)s-udp, protocol&#x3D;&quot;udp&quot;]
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;mumble-server&#x2F;mumble-server.log
+
+
+[screensharingd]
+# For Mac OS Screen Sharing Service (VNC)
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;system.log
+logencoding &#x3D; utf-8
+
+[haproxy-http-auth]
+# HAProxy by default doesn&#39;t log to file you&#39;ll need to set it up to forward
+# logs to a syslog server which would then write them to disk.
+# See &quot;haproxy-http-auth&quot; filter for a brief cautionary note when setting
+# maxretry and findtime.
+logpath  &#x3D; &#x2F;var&#x2F;log&#x2F;haproxy.log
+
+[slapd]
+port    &#x3D; ldap,ldaps
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;slapd.log
+
+[domino-smtp]
+port    &#x3D; smtp,ssmtp
+logpath &#x3D; &#x2F;home&#x2F;domino01&#x2F;data&#x2F;IBM_TECHNICAL_SUPPORT&#x2F;console.log
+
+[phpmyadmin-syslog]
+port    &#x3D; http,https
+logpath &#x3D; %(syslog_authpriv)s
+backend &#x3D; %(syslog_backend)s
+
+
+[zoneminder]
+# Zoneminder HTTP&#x2F;HTTPS web interface auth
+# Logs auth failures to apache2 error log
+port    &#x3D; http,https
+logpath &#x3D; %(apache_error_log)s
+
+[traefik-auth]
+# to use &#39;traefik-auth&#39; filter you have to configure your Traefik instance,
+# see &#96;filter.d&#x2F;traefik-auth.conf&#96; for details and service example.
+port    &#x3D; http,https
+logpath &#x3D; &#x2F;var&#x2F;log&#x2F;traefik&#x2F;access.log</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：Fail2ban 工具</li><li>本文作者：白羊</li><li>创建时间：2022-04-22 11:06:41</li><li>本文链接：https://www.liruiyi.xyz/page/Tools/Fail2ban/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-prev"><a class="prev" rel="prev" href="/page/Linux/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="left arrow-icon flex-center"><i class="fas fa-chevron-left"></i> </span><span class="title flex-center"><span class="post-nav-title-item">正则表达式</span> <span class="post-nav-item">上一篇</span></span></a></div><div class="article-next"><a class="next" rel="next" href="/page/Linux/Linux%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81/"><span class="title flex-center"><span class="post-nav-title-item">Linux 修改密码</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Fail2ban-%E5%B7%A5%E5%85%B7"><span class="nav-text">Fail2ban 工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail2ban-%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-text">Fail2ban 的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail2ban-%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text">Fail2ban 的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail2ban-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">Fail2ban 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-sshd-%E6%8B%A6%E6%88%AA%E8%A7%84%E5%88%99"><span class="nav-text">配置 sshd 拦截规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail2ban-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">Fail2ban 配置文件</span></a></li></ol></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>测试网络连通性 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">测试网络连通性</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2022-05-13 09:52:44 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Network/">Network</a>&nbsp;</li></ul></span><span class="article-tags article-meta-item"><i class="fas fa-tags"></i>&nbsp;<ul><li><a href="/tags/nc/">nc</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="测试网络连通性"><a href="#测试网络连通性" class="headerlink" title="测试网络连通性"></a>测试网络连通性</h1><h1 id="NC-命令详解"><a href="#NC-命令详解" class="headerlink" title="NC 命令详解"></a>NC 命令详解</h1><h2 id="命令语法："><a href="#命令语法：" class="headerlink" title="命令语法："></a>命令语法：</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">Usage: ncat [options] [hostname] [port]
+
+Options taking a time assume seconds. Append &#39;ms&#39; for milliseconds,
+&#39;s&#39; for seconds, &#39;m&#39; for minutes, or &#39;h&#39; for hours (e.g. 500ms).
+  -4                         Use IPv4 only
+  -6                         Use IPv6 only
+  -U, --unixsock             Use Unix domain sockets only
+  -C, --crlf                 Use CRLF for EOL sequence
+  -c, --sh-exec &lt;command&gt;    Executes the given command via &#x2F;bin&#x2F;sh
+  -e, --exec &lt;command&gt;       Executes the given command
+      --lua-exec &lt;filename&gt;  Executes the given Lua script
+  -g hop1[,hop2,...]         Loose source routing hop points (8 max)
+  -G &lt;n&gt;                     Loose source routing hop pointer (4, 8, 12, ...)
+  -m, --max-conns &lt;n&gt;        Maximum &lt;n&gt; simultaneous connections
+  -h, --help                 Display this help screen
+  -d, --delay &lt;time&gt;         Wait between read&#x2F;writes
+  -o, --output &lt;filename&gt;    Dump session data to a file
+  -x, --hex-dump &lt;filename&gt;  Dump session data as hex to a file
+  -i, --idle-timeout &lt;time&gt;  Idle read&#x2F;write timeout
+  -p, --source-port port     Specify source port to use
+  -s, --source addr          Specify source address to use (doesn&#39;t affect -l)
+  -l, --listen               Bind and listen for incoming connections
+  -k, --keep-open            Accept multiple connections in listen mode
+  -n, --nodns                Do not resolve hostnames via DNS
+  -t, --telnet               Answer Telnet negotiations
+  -u, --udp                  Use UDP instead of default TCP
+      --sctp                 Use SCTP instead of default TCP
+  -v, --verbose              Set verbosity level (can be used several times)
+  -w, --wait &lt;time&gt;          Connect timeout
+  -z                         Zero-I&#x2F;O mode, report connection status only
+      --append-output        Append rather than clobber specified output files
+      --send-only            Only send data, ignoring received; quit on EOF
+      --recv-only            Only receive data, never send anything
+      --allow                Allow only given hosts to connect to Ncat
+      --allowfile            A file of hosts allowed to connect to Ncat
+      --deny                 Deny given hosts from connecting to Ncat
+      --denyfile             A file of hosts denied from connecting to Ncat
+      --broker               Enable Ncat&#39;s connection brokering mode
+      --chat                 Start a simple Ncat chat server
+      --proxy &lt;addr[:port]&gt;  Specify address of host to proxy through
+      --proxy-type &lt;type&gt;    Specify proxy type (&quot;http&quot; or &quot;socks4&quot; or &quot;socks5&quot;)
+      --proxy-auth &lt;auth&gt;    Authenticate with HTTP or SOCKS proxy server
+      --ssl                  Connect or listen with SSL
+      --ssl-cert             Specify SSL certificate file (PEM) for listening
+      --ssl-key              Specify SSL private key (PEM) for listening
+      --ssl-verify           Verify trust and domain name of certificates
+      --ssl-trustfile        PEM file containing trusted SSL certificates
+      --ssl-ciphers          Cipherlist containing SSL ciphers to use
+      --version              Display Ncat&#39;s version information and exit
+
+See the ncat(1) manpage for full options, descriptions and usage examples</code></pre><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">Usage: ncat [选项] [主机] [端口]
+
+选项分配的时间默认为秒. 附加 &quot;ms&quot; 毫秒, &#39;s&#39; 代表秒, &#39;m&#39; 代表分钟, 或 &#39;h&#39; 代表小时 (例如 500ms ).
+  -4                         仅使用 IPv4
+  -6                         仅使用 IPv6
+  -U, --unixsock             仅使用 Unix 域套接字
+  -C, --crlf                 将 CRLF 用于 EOL 序列
+  -c, --sh-exec &lt;command&gt;    通过 &#x2F;bin&#x2F;sh 执行给定的命令
+  -e, --exec &lt;command&gt;       执行给定的命令
+      --lua-exec &lt;filename&gt;  执行给定的 Lua 脚本
+  -g hop1[,hop2,...]         松散源路由跳点 (最多 8 个)
+  -G &lt;n&gt;                     松散源路由跳点指针 (4, 8, 12, ...)
+  -m, --max-conns &lt;n&gt;        最大 &lt;n&gt; 个同时连接数
+  -h, --help                 显示此帮助屏幕
+  -d, --delay &lt;time&gt;         在读&#x2F;写时等待
+  -o, --output &lt;filename&gt;    将会话数据转储到文件
+  -x, --hex-dump &lt;filename&gt;  将会话数据作为十六进制转储到文件中
+  -i, --idle-timeout &lt;time&gt;  空闲读&#x2F;写超时
+  -p, --source-port port     指定要使用的源端口
+  -s, --source addr          指定要使用的源地址 (不影响 -l)
+  -l, --listen               绑定并监听传入连接
+  -k, --keep-open            在监听模式下接受多个连接
+  -n, --nodns                不要通过 DNS 解析主机名
+  -t, --telnet               回答 Telnet 协商
+  -u, --udp                  使用 UDP 而不是默认的 TCP
+      --sctp                 使用 SCTP 代替默认 TCP
+  -v, --verbose              设置详细级别 (可多次使用)
+  -w, --wait &lt;time&gt;          连接超时
+  -z                         零 I&#x2F;O 模式，仅报告连接状态
+      --append-output        追加而不是破坏指定的输出文件
+      --send-only            只发送数据，忽略接收; 在 EOF 上退出
+      --recv-only            只接收数据，不发送任何东西
+      --allow                只允许给定的主机连接到 Ncat
+      --allowfile            允许连接到 Ncat 的主机文件
+      --deny                 拒绝给定主机连接到 Ncat
+      --denyfile             拒绝连接到 Ncat 的主机文件
+      --broker               启用 Ncat 的连接代理模式
+      --chat                 启动一个简单的 Ncat 聊天服务器
+      --proxy &lt;addr[:port]&gt;  指定要代理的主机地址
+      --proxy-type &lt;type&gt;    指定代理类型(&quot;http&quot; 或 &quot;socks4&quot; 或 &quot;socks5&quot;)
+      --proxy-auth &lt;auth&gt;    使用 HTTP 或 SOCKS 代理服务器进行身份验证
+      --ssl                  使用 SSL 连接或收听
+      --ssl-cert             指定用于侦听的 SSL 证书文件 (PEM)
+      --ssl-key              指定用于侦听的 SSL 私钥 (PEM)
+      --ssl-verify           验证证书的信任和域名
+      --ssl-trustfile        包含可信 SSL 证书的 PEM 文件
+      --ssl-ciphers          包含要使用的 SSL 密码的密码列表
+      --version              显示 Ncat 的版本信息并退出
+
+有关完整的选项、描述和使用示例，请参见 ncat(1) 联机帮助页</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：测试网络连通性</li><li>本文作者：白羊</li><li>创建时间：2022-05-13 09:52:44</li><li>本文链接：https://www.liruiyi.xyz/page/测试网络连通性/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-next"><a class="next" rel="next" href="/page/Windows/Windows%E4%BF%AE%E6%94%B9%E8%BF%9C%E7%A8%8B%E7%AB%AF%E5%8F%A3/"><span class="title flex-center"><span class="post-nav-title-item">Windows修改远程桌面端口</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BD%91%E7%BB%9C%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="nav-text">测试网络连通性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NC-%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-text">NC 命令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95%EF%BC%9A"><span class="nav-text">命令语法：</span></a></li></ol></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>

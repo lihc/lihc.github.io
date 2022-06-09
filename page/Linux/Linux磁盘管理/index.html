@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>Linux 磁盘管理 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">Linux 磁盘管理</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2021-12-06 09:52:36 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Linux/">Linux</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="Linux-磁盘管理"><a href="#Linux-磁盘管理" class="headerlink" title="Linux 磁盘管理"></a>Linux 磁盘管理</h1><h2 id="1-列出磁盘信息-fdisk"><a href="#1-列出磁盘信息-fdisk" class="headerlink" title="1. 列出磁盘信息 (fdisk)"></a>1. 列出磁盘信息 (fdisk)</h2><h3 id="fdisk-命令语法"><a href="#fdisk-命令语法" class="headerlink" title="fdisk 命令语法"></a>fdisk 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">Usage:
+ fdisk [options] &lt;disk&gt;    change partition table
+ fdisk [options] -l &lt;disk&gt; list partition table(s)
+ fdisk -s &lt;partition&gt;      give partition size(s) in blocks
+
+Options:
+ -b &lt;size&gt;             sector size (512, 1024, 2048 or 4096)
+ -c[&#x3D;&lt;mode&gt;]           compatible mode: &#39;dos&#39; or &#39;nondos&#39; (default)
+ -h                    print this help text
+ -u[&#x3D;&lt;unit&gt;]           display units: &#39;cylinders&#39; or &#39;sectors&#39; (default)
+ -v                    print program version
+ -C &lt;number&gt;           specify the number of cylinders
+ -H &lt;number&gt;           specify the number of heads
+ -S &lt;number&gt;           specify the number of sectors per track</code></pre><h3 id="查看磁盘信息"><a href="#查看磁盘信息" class="headerlink" title="查看磁盘信息"></a>查看磁盘信息</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fdisk -l &#x2F;dev&#x2F;vdb
+Disk &#x2F;dev&#x2F;vdb: 107.4 GB, 107374182400 bytes, 209715200 sectors
+Units &#x3D; sectors of 1 * 512 &#x3D; 512 bytes
+Sector size (logical&#x2F;physical): 512 bytes &#x2F; 512 bytes
+I&#x2F;O size (minimum&#x2F;optimal): 512 bytes &#x2F; 512 bytes</code></pre><h2 id="2-磁盘分区-dev-vdb"><a href="#2-磁盘分区-dev-vdb" class="headerlink" title="2. 磁盘分区 (/dev/vdb)"></a>2. 磁盘分区 (/dev/vdb)</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ fdisk &#x2F;dev&#x2F;vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0x1374a378.
+
+Command (m for help): m    # 打印此菜单
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition&#39;s system id
+   u   change display&#x2F;entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): n    # 添加新分区
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p    # 主分区
+Partition number (1-4, default 1): 1    # 分区编号(&#x2F;dev&#x2F;vdb1)
+First sector (2048-209715199, default 2048):     # 起始位置
+Using default value 2048
+Last sector, +sectors or +size&#123;K,M,G&#125; (2048-209715199, default 209715199): +20G    # 结束位置(+20G)
+Partition 1 of type Linux and of size 20 GiB is set
+
+Command (m for help): p    # 打印分区表
+
+Disk &#x2F;dev&#x2F;vdb: 107.4 GB, 107374182400 bytes, 209715200 sectors
+Units &#x3D; sectors of 1 * 512 &#x3D; 512 bytes
+Sector size (logical&#x2F;physical): 512 bytes &#x2F; 512 bytes
+I&#x2F;O size (minimum&#x2F;optimal): 512 bytes &#x2F; 512 bytes
+Disk label type: dos
+Disk identifier: 0x1374a378
+
+   Device Boot      Start         End      Blocks   Id  System
+&#x2F;dev&#x2F;vdb1            2048    41945087    20971520   83  Linux
+
+Command (m for help): w    # 将表写入磁盘并退出
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.</code></pre><h2 id="3-查看磁盘信息-lsblk"><a href="#3-查看磁盘信息-lsblk" class="headerlink" title="3. 查看磁盘信息 (lsblk)"></a>3. 查看磁盘信息 (lsblk)</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lsblk &#x2F;dev&#x2F;vdb
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vdb    253:16   0  100G  0 disk 
+└─vdb1 253:17   0   20G  0 part </code></pre><h2 id="4-磁盘格式化-mkfs"><a href="#4-磁盘格式化-mkfs" class="headerlink" title="4. 磁盘格式化 (mkfs)"></a>4. 磁盘格式化 (mkfs)</h2><h3 id="mkfs-命令语法"><a href="#mkfs-命令语法" class="headerlink" title="mkfs 命令语法"></a>mkfs 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ mkfs --help
+Usage:
+ mkfs [options] [-t &lt;type&gt;] [fs-options] &lt;device&gt; [&lt;size&gt;]
+
+Options:
+ -t, --type&#x3D;&lt;type&gt;  filesystem type; when unspecified, ext2 is used
+     fs-options     parameters for the real filesystem builder
+     &lt;device&gt;       path to the device to be used
+     &lt;size&gt;         number of blocks to be used on the device
+ -V, --verbose      explain what is being done;
+                      specifying -V more than once will cause a dry-run
+ -V, --version      display version information and exit;
+                      -V as --version must be the only option
+ -h, --help         display this help text and exit
+
+For more information see mkfs(8).</code></pre><h3 id="文件系统类型"><a href="#文件系统类型" class="headerlink" title="文件系统类型"></a>文件系统类型</h3><ul><li><p>ext：Linux 中最早的文件系统，由于在性能和兼容性上具有很多缺陷，现在已经很少使用。</p></li><li><p>ext2：Red Hat 7.2 版本以前的系统默认都是 Ext2 文件系统。于 1993 年发布，支持最大 16TB 的分区和最大 2TB 的文件。</p></li><li><p>ext3：增加日志功能，可回溯追踪，以便在系统突然停止时提高文件系统的可靠性。支持最大 16TB 的分区和最大 2TB 的文件。</p></li><li><p>ext4：日志式文件系统，Ext4 在性能、伸缩性和可靠性方面进行了大量改进。</p></li><li><p>xfs：被业界称为先进的、最具可升级性的文件系统技术。</p></li></ul><h3 id="磁盘格式化-xfs"><a href="#磁盘格式化-xfs" class="headerlink" title="磁盘格式化 (xfs)"></a>磁盘格式化 (xfs)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ mkfs -t xfs &#x2F;dev&#x2F;vdb1    # 格式化为 xfs 文件系统
+meta-data&#x3D;&#x2F;dev&#x2F;vdb1              isize&#x3D;512    agcount&#x3D;4, agsize&#x3D;1310720 blks
+         &#x3D;                       sectsz&#x3D;512   attr&#x3D;2, projid32bit&#x3D;1
+         &#x3D;                       crc&#x3D;1        finobt&#x3D;0, sparse&#x3D;0
+data     &#x3D;                       bsize&#x3D;4096   blocks&#x3D;5242880, imaxpct&#x3D;25
+         &#x3D;                       sunit&#x3D;0      swidth&#x3D;0 blks
+naming   &#x3D;version 2              bsize&#x3D;4096   ascii-ci&#x3D;0 ftype&#x3D;1
+log      &#x3D;internal log           bsize&#x3D;4096   blocks&#x3D;2560, version&#x3D;2
+         &#x3D;                       sectsz&#x3D;512   sunit&#x3D;0 blks, lazy-count&#x3D;1
+realtime &#x3D;none                   extsz&#x3D;4096   blocks&#x3D;0, rtextents&#x3D;0</code></pre><h2 id="5-磁盘挂载-mount"><a href="#5-磁盘挂载-mount" class="headerlink" title="5. 磁盘挂载 (mount)"></a>5. 磁盘挂载 (mount)</h2><h3 id="mount-命令语法"><a href="#mount-命令语法" class="headerlink" title="mount 命令语法"></a>mount 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ mount --help
+Usage:
+ mount [-lhV]
+ mount -a [options]
+ mount [options] [--source] &lt;source&gt; | [--target] &lt;directory&gt;
+ mount [options] &lt;source&gt; &lt;directory&gt;
+ mount &lt;operation&gt; &lt;mountpoint&gt; [&lt;target&gt;]
+
+Options:
+ -a, --all               mount all filesystems mentioned in fstab
+ -c, --no-canonicalize   don&#39;t canonicalize paths
+ -f, --fake              dry run; skip the mount(2) syscall
+ -F, --fork              fork off for each device (use with -a)
+ -T, --fstab &lt;path&gt;      alternative file to &#x2F;etc&#x2F;fstab
+ -h, --help              display this help text and exit
+ -i, --internal-only     don&#39;t call the mount.&lt;type&gt; helpers
+ -l, --show-labels       lists all mounts with LABELs
+ -n, --no-mtab           don&#39;t write to &#x2F;etc&#x2F;mtab
+ -o, --options &lt;list&gt;    comma-separated list of mount options
+ -O, --test-opts &lt;list&gt;  limit the set of filesystems (use with -a)
+ -r, --read-only         mount the filesystem read-only (same as -o ro)
+ -t, --types &lt;list&gt;      limit the set of filesystem types
+     --source &lt;src&gt;      explicitly specifies source (path, label, uuid)
+     --target &lt;target&gt;   explicitly specifies mountpoint
+ -v, --verbose           say what is being done
+ -V, --version           display version information and exit
+ -w, --rw, --read-write  mount the filesystem read-write (default)
+
+ -h, --help     display this help and exit
+ -V, --version  output version information and exit
+
+Source:
+ -L, --label &lt;label&gt;     synonym for LABEL&#x3D;&lt;label&gt;
+ -U, --uuid &lt;uuid&gt;       synonym for UUID&#x3D;&lt;uuid&gt;
+ LABEL&#x3D;&lt;label&gt;           specifies device by filesystem label
+ UUID&#x3D;&lt;uuid&gt;             specifies device by filesystem UUID
+ PARTLABEL&#x3D;&lt;label&gt;       specifies device by partition label
+ PARTUUID&#x3D;&lt;uuid&gt;         specifies device by partition UUID
+ &lt;device&gt;                specifies device by path
+ &lt;directory&gt;             mountpoint for bind mounts (see --bind&#x2F;rbind)
+ &lt;file&gt;                  regular file for loopdev setup
+
+Operations:
+ -B, --bind              mount a subtree somewhere else (same as -o bind)
+ -M, --move              move a subtree to some other place
+ -R, --rbind             mount a subtree and all submounts somewhere else
+ --make-shared           mark a subtree as shared
+ --make-slave            mark a subtree as slave
+ --make-private          mark a subtree as private
+ --make-unbindable       mark a subtree as unbindable
+ --make-rshared          recursively mark a whole subtree as shared
+ --make-rslave           recursively mark a whole subtree as slave
+ --make-rprivate         recursively mark a whole subtree as private
+ --make-runbindable      recursively mark a whole subtree as unbindable
+
+For more details see mount(8).</code></pre><h3 id="磁盘挂载-dev-vdb1"><a href="#磁盘挂载-dev-vdb1" class="headerlink" title="磁盘挂载 (/dev/vdb1)"></a>磁盘挂载 (/dev/vdb1)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">mount &#x2F;dev&#x2F;vdb1 &#x2F;mnt</code></pre><p>卸载挂载的磁盘：</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">umount &#x2F;dev&#x2F;vdb1</code></pre><h3 id="磁盘自动挂载"><a href="#磁盘自动挂载" class="headerlink" title="磁盘自动挂载"></a>磁盘自动挂载</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lsblk -f &#x2F;dev&#x2F;vdb
+NAME   FSTYPE LABEL UUID                                 MOUNTPOINT
+vdb
+└─vdb1 xfs          26e0cb87-7156-40dc-ac17-99cbb953014d &#x2F;mnt</code></pre><p>修改 <code>/etc/fstab</code> 文件：</p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">echo &#39;UUID&#x3D;26e0cb87-7156-40dc-ac17-99cbb953014d &#x2F;mnt                    xfs     defaults        0 0&#39; &gt;&gt; &#x2F;etc&#x2F;fstab</code></pre><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">#
+# &#x2F;etc&#x2F;fstab
+# Created by anaconda on Thu Sep  3 14:53:55 2020
+#
+# Accessible filesystems, by reference, are maintained under &#39;&#x2F;dev&#x2F;disk&#39;
+# See man pages fstab(5), findfs(8), mount(8) and&#x2F;or blkid(8) for more info
+#
+UUID&#x3D;76de10e7-9221-4e3c-acdd-e6df290df5ec &#x2F;                       xfs     defaults        0 0
+UUID&#x3D;5a24a147-6f2f-449a-8ba9-9fbf20226e62 &#x2F;boot                   xfs     defaults        0 0
+UUID&#x3D;26e0cb87-7156-40dc-ac17-99cbb953014d &#x2F;mnt                    xfs     defaults        0 0</code></pre><p>fstab 文件字段含义：</p><pre class="line-numbers language-none"><code class="language-none">&lt;file systems&gt;  &lt;mount point&gt;  &lt;type&gt;  &lt;options&gt;  &lt;dump&gt;  &lt;pass&gt;</code></pre><ul><li>file systems：挂载设备，设备（分区）的名字，也可以使用“UUID=”。</li><li>mount point：挂载点，设备挂载到的文件目录。</li><li>type： 文件系统类型，( ext2 | ext3 | ext4 | xfs … ) 。</li><li>options：文件系统参数，(defaults | rw | ro ) ……</li><li>dump：( 0 | 1 ) ，对于 dump 决定是否备份。0 表示忽略。</li><li>pass：( 0 | 1 | 2 )，文件系统的检查 ( fsck ) 顺序，含义代表为 “忽略检查”、”优先检查” 和 “需要检查”。</li></ul><h2 id="6-查看磁盘挂载-df"><a href="#6-查看磁盘挂载-df" class="headerlink" title="6. 查看磁盘挂载 (df)"></a>6. 查看磁盘挂载 (df)</h2><h3 id="df-命令语法"><a href="#df-命令语法" class="headerlink" title="df 命令语法"></a>df 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ df --help
+Usage: df [OPTION]... [FILE]...
+Show information about the file system on which each FILE resides,
+or all file systems by default.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --all             include pseudo, duplicate, inaccessible file systems
+  -B, --block-size&#x3D;SIZE  scale sizes by SIZE before printing them; e.g.,
+                           &#39;-BM&#39; prints sizes in units of 1,048,576 bytes;
+                           see SIZE format below
+      --direct          show statistics for a file instead of mount point
+      --total           produce a grand total
+  -h, --human-readable  print sizes in human readable format (e.g., 1K 234M 2G)
+  -H, --si              likewise, but use powers of 1000 not 1024
+  -i, --inodes          list inode information instead of block usage
+  -k                    like --block-size&#x3D;1K
+  -l, --local           limit listing to local file systems
+      --no-sync         do not invoke sync before getting usage info (default)
+      --output[&#x3D;FIELD_LIST]  use the output format defined by FIELD_LIST,
+                               or print all fields if FIELD_LIST is omitted.
+  -P, --portability     use the POSIX output format
+      --sync            invoke sync before getting usage info
+  -t, --type&#x3D;TYPE       limit listing to file systems of type TYPE
+  -T, --print-type      print file system type
+  -x, --exclude-type&#x3D;TYPE   limit listing to file systems not of type TYPE
+  -v                    (ignored)
+      --help     display this help and exit
+      --version  output version information and exit
+
+Display values are in units of the first available SIZE from --block-size,
+and the DF_BLOCK_SIZE, BLOCK_SIZE and BLOCKSIZE environment variables.
+Otherwise, units default to 1024 bytes (or 512 if POSIXLY_CORRECT is set).
+
+SIZE is an integer and optional unit (example: 10M is 10*1024*1024).  Units
+are K, M, G, T, P, E, Z, Y (powers of 1024) or KB, MB, ... (powers of 1000).
+
+FIELD_LIST is a comma-separated list of columns to be included.  Valid
+field names are: &#39;source&#39;, &#39;fstype&#39;, &#39;itotal&#39;, &#39;iused&#39;, &#39;iavail&#39;, &#39;ipcent&#39;,
+&#39;size&#39;, &#39;used&#39;, &#39;avail&#39;, &#39;pcent&#39;, &#39;file&#39; and &#39;target&#39; (see info page).
+
+GNU coreutils online help: &lt;http:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;coreutils&#x2F;&gt;
+For complete documentation, run: info coreutils &#39;df invocation&#39;</code></pre><h3 id="查看磁盘挂载"><a href="#查看磁盘挂载" class="headerlink" title="查看磁盘挂载"></a>查看磁盘挂载</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ df -Th
+Filesystem     Type      Size  Used Avail Use% Mounted on
+&#x2F;dev&#x2F;vda1      ext4       59G  3.1G   54G   6% &#x2F;
+devtmpfs       devtmpfs  858M     0  858M   0% &#x2F;dev
+tmpfs          tmpfs     868M     0  868M   0% &#x2F;dev&#x2F;shm
+tmpfs          tmpfs     868M  452K  867M   1% &#x2F;run
+tmpfs          tmpfs     868M     0  868M   0% &#x2F;sys&#x2F;fs&#x2F;cgroup
+tmpfs          tmpfs     174M     0  174M   0% &#x2F;run&#x2F;user&#x2F;0
+&#x2F;dev&#x2F;vdb1      xfs        20G   33M   20G   1% &#x2F;mnt</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：Linux 磁盘管理</li><li>本文作者：白羊</li><li>创建时间：2021-12-06 09:52:36</li><li>本文链接：https://www.liruiyi.xyz/page/Linux/Linux磁盘管理/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-prev"><a class="prev" rel="prev" href="/page/Linux/Linux%20LVM%E9%80%BB%E8%BE%91%E5%8D%B7/"><span class="left arrow-icon flex-center"><i class="fas fa-chevron-left"></i> </span><span class="title flex-center"><span class="post-nav-title-item">Linux LVM 逻辑卷</span> <span class="post-nav-item">上一篇</span></span></a></div><div class="article-next"><a class="next" rel="next" href="/page/MySQL/MySQL%E5%91%BD%E4%BB%A4%E7%AC%94%E8%AE%B0/"><span class="title flex-center"><span class="post-nav-title-item">MySQL 命令笔记</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86"><span class="nav-text">Linux 磁盘管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%88%97%E5%87%BA%E7%A3%81%E7%9B%98%E4%BF%A1%E6%81%AF-fdisk"><span class="nav-text">1. 列出磁盘信息 (fdisk)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fdisk-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">fdisk 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BF%A1%E6%81%AF"><span class="nav-text">查看磁盘信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA-dev-vdb"><span class="nav-text">2. 磁盘分区 (&#x2F;dev&#x2F;vdb)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BF%A1%E6%81%AF-lsblk"><span class="nav-text">3. 查看磁盘信息 (lsblk)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%A3%81%E7%9B%98%E6%A0%BC%E5%BC%8F%E5%8C%96-mkfs"><span class="nav-text">4. 磁盘格式化 (mkfs)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mkfs-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">mkfs 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%9E%8B"><span class="nav-text">文件系统类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%A0%BC%E5%BC%8F%E5%8C%96-xfs"><span class="nav-text">磁盘格式化 (xfs)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD-mount"><span class="nav-text">5. 磁盘挂载 (mount)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mount-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">mount 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD-dev-vdb1"><span class="nav-text">磁盘挂载 (&#x2F;dev&#x2F;vdb1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD"><span class="nav-text">磁盘自动挂载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD-df"><span class="nav-text">6. 查看磁盘挂载 (df)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#df-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">df 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD"><span class="nav-text">查看磁盘挂载</span></a></li></ol></li></ol></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>Linux LVM 逻辑卷 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">Linux LVM 逻辑卷</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2021-12-06 15:07:05 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Linux/">Linux</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="Linux-LVM-逻辑卷"><a href="#Linux-LVM-逻辑卷" class="headerlink" title="Linux LVM 逻辑卷"></a>Linux LVM 逻辑卷</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lsblk
+NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+vda    253:0    0  60G  0 disk
+└─vda1 253:1    0  60G  0 part &#x2F;
+vdb    253:16   0  50G  0 disk 
+├─vdb1 253:17   0  20G  0 part 
+└─vdb2 253:18   0  20G  0 part</code></pre><p><strong>LVM 逻辑卷管理命令：</strong></p><table><thead><tr><th align="center">功能</th><th align="center">PV 物理卷</th><th align="center">VG 卷组</th><th align="center">LV 逻辑卷</th></tr></thead><tbody><tr><td align="center">扫描 (Scan)</td><td align="center">pvscan</td><td align="center">vgscan</td><td align="center">lvscan</td></tr><tr><td align="center">建立 (Create)</td><td align="center">pvcreate</td><td align="center">vgcreate</td><td align="center">lvcreate</td></tr><tr><td align="center">显示 (Display)</td><td align="center">pvdisplay</td><td align="center">vgdisplay</td><td align="center">lvdisplay</td></tr><tr><td align="center">删除 (Remove)</td><td align="center">pvremove</td><td align="center">vgremove</td><td align="center">lvremove</td></tr><tr><td align="center">扩展 (Extend)</td><td align="center">-</td><td align="center">vgextend</td><td align="center">lvextend</td></tr><tr><td align="center">减少 (Reduce)</td><td align="center">-</td><td align="center">vgreduce</td><td align="center">lvreduce</td></tr></tbody></table><h2 id="1-PV-Physical-Volume-物理卷"><a href="#1-PV-Physical-Volume-物理卷" class="headerlink" title="1. PV (Physical Volume) 物理卷"></a>1. PV (Physical Volume) 物理卷</h2><h3 id="pvcreate-命令语法"><a href="#pvcreate-命令语法" class="headerlink" title="pvcreate 命令语法"></a>pvcreate 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"> pvcreate - Initialize physical volume(s) for use by LVM
+
+ pvcreate PV ...
+[ -f|--force ]
+[ -M|--metadatatype lvm2|lvm1 ]
+[ -u|--uuid String ]
+[ -Z|--zero y|n ]
+[    --dataalignment Size[k|UNIT] ]
+[    --dataalignmentoffset Size[k|UNIT] ]
+[    --bootloaderareasize Size[m|UNIT] ]
+[    --labelsector Number ]
+[    --pvmetadatacopies 0|1|2 ]
+[    --metadatasize Size[m|UNIT] ]
+[    --metadataignore y|n ]
+[    --norestorefile ]
+[    --setphysicalvolumesize Size[m|UNIT] ]
+[    --reportformat basic|json ]
+[    --restorefile String ]
+[ COMMON_OPTIONS ]
+
+ Common options for lvm:
+[ -d|--debug ]
+[ -h|--help ]
+[ -q|--quiet ]
+[ -v|--verbose ]
+[ -y|--yes ]
+[ -t|--test ]
+[    --commandprofile String ]
+[    --config String ]
+[    --driverloaded y|n ]
+[    --lockopt String ]
+[    --longhelp ]
+[    --profile String ]
+[    --version ]
+
+ Common variables for lvm:
+       Variables in option or position args are capitalized,
+       e.g. PV, VG, LV, Size, Number, String, Tag.
+
+       PV
+       Physical Volume name, a device path under &#x2F;dev.
+       For commands managing physical extents, a PV positional arg
+       generally accepts a suffix indicating a range (or multiple ranges)
+       of PEs. When the first PE is omitted, it defaults to the start of
+       the device, and when the last PE is omitted it defaults to the end.
+       PV[:PE-PE]... is start and end range (inclusive),
+       PV[:PE+PE]... is start and length range (counting from 0).
+
+       LV
+       Logical Volume name. See lvm(8) for valid names. An LV positional
+       arg generally includes the VG name and LV name, e.g. VG&#x2F;LV.
+       LV followed by _&lt;type&gt; indicates that an LV of the given type is
+       required. (raid represents raid&lt;N&gt; type).
+       The _new suffix indicates that the LV name is new.
+
+       Tag
+       Tag name. See lvm(8) for information about tag names and using
+       tags in place of a VG, LV or PV.
+
+       Select
+       Select indicates that a required positional arg can be omitted
+       if the --select option is used. No arg appears in this position.
+
+       Size[UNIT]
+       Size is an input number that accepts an optional unit.
+       Input units are always treated as base two values, regardless of
+       capitalization, e.g. &#39;k&#39; and &#39;K&#39; both refer to 1024.
+       The default input unit is specified by letter, followed by |UNIT.
+       UNIT represents other possible input units: BbBsSkKmMgGtTpPeE.
+       (This should not be confused with the output control --units, where
+       capital letters mean multiple of 1000.)</code></pre><h3 id="创建物理卷-pvcreate"><a href="#创建物理卷-pvcreate" class="headerlink" title="创建物理卷 (pvcreate)"></a>创建物理卷 (pvcreate)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ pvcreate &#x2F;dev&#x2F;vdb&#123;1,2&#125;
+  Physical volume &quot;&#x2F;dev&#x2F;vdb1&quot; successfully created.
+  Physical volume &quot;&#x2F;dev&#x2F;vdb2&quot; successfully created.</code></pre><h3 id="扫描物理卷-pvscan"><a href="#扫描物理卷-pvscan" class="headerlink" title="扫描物理卷 (pvscan)"></a>扫描物理卷 (pvscan)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ pvscan
+  PV &#x2F;dev&#x2F;vdb1                      lvm2 [20.00 GiB]
+  PV &#x2F;dev&#x2F;vdb2                      lvm2 [20.00 GiB]
+  Total: 2 [40.00 GiB] &#x2F; in use: 0 [0   ] &#x2F; in no VG: 2 [40.00 GiB]</code></pre><h3 id="显示物理卷-pvdisplay"><a href="#显示物理卷-pvdisplay" class="headerlink" title="显示物理卷 (pvdisplay)"></a>显示物理卷 (pvdisplay)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ pvdisplay 
+  &quot;&#x2F;dev&#x2F;vdb1&quot; is a new physical volume of &quot;20.00 GiB&quot;
+  --- NEW Physical volume ---
+  PV Name               &#x2F;dev&#x2F;vdb1
+  VG Name               
+  PV Size               20.00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               mw1pDq-TT3Z-6k9J-dWes-ioh1-1bRJ-rS2Fwx
+
+  &quot;&#x2F;dev&#x2F;vdb2&quot; is a new physical volume of &quot;20.00 GiB&quot;
+  --- NEW Physical volume ---
+  PV Name               &#x2F;dev&#x2F;vdb2
+  VG Name               
+  PV Size               20.00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               gLMrPv-6mfw-FMVI-ceWr-G96i-bdoL-dJJSbF</code></pre><h3 id="删除物理卷-pvremove"><a href="#删除物理卷-pvremove" class="headerlink" title="删除物理卷 (pvremove)"></a>删除物理卷 (pvremove)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ pvremove &#x2F;dev&#x2F;vdb&#123;1,2&#125;
+  Labels on physical volume &quot;&#x2F;dev&#x2F;vdb1&quot; successfully wiped.
+  Labels on physical volume &quot;&#x2F;dev&#x2F;vdb2&quot; successfully wiped.</code></pre><h2 id="2-VG-Volumne-Group-卷组"><a href="#2-VG-Volumne-Group-卷组" class="headerlink" title="2. VG (Volumne Group) 卷组"></a>2. VG (Volumne Group) 卷组</h2><h3 id="vgcreate-命令语法"><a href="#vgcreate-命令语法" class="headerlink" title="vgcreate 命令语法"></a>vgcreate 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"> vgcreate - Create a volume group
+
+ vgcreate VG_new PV ...
+[ -A|--autobackup y|n ]
+[ -c|--clustered y|n ]
+[ -l|--maxlogicalvolumes Number ]
+[ -p|--maxphysicalvolumes Number ]
+[ -M|--metadatatype lvm2|lvm1 ]
+[ -s|--physicalextentsize Size[m|UNIT] ]
+[ -f|--force ]
+[ -Z|--zero y|n ]
+[    --addtag Tag ]
+[    --alloc contiguous|cling|cling_by_tags|normal|anywhere|inherit ]
+[    --metadataprofile String ]
+[    --labelsector Number ]
+[    --metadatasize Size[m|UNIT] ]
+[    --pvmetadatacopies 0|1|2 ]
+[    --vgmetadatacopies all|unmanaged|Number ]
+[    --reportformat basic|json ]
+[    --dataalignment Size[k|UNIT] ]
+[    --dataalignmentoffset Size[k|UNIT] ]
+[    --shared ]
+[    --systemid String ]
+[    --locktype sanlock|dlm|none ]
+[ COMMON_OPTIONS ]
+
+ Common options for lvm:
+[ -d|--debug ]
+[ -h|--help ]
+[ -q|--quiet ]
+[ -v|--verbose ]
+[ -y|--yes ]
+[ -t|--test ]
+[    --commandprofile String ]
+[    --config String ]
+[    --driverloaded y|n ]
+[    --lockopt String ]
+[    --longhelp ]
+[    --profile String ]
+[    --version ]
+
+ Use --longhelp to show all options and advanced commands.</code></pre><h3 id="创建卷组-vgcreate"><a href="#创建卷组-vgcreate" class="headerlink" title="创建卷组 (vgcreate)"></a>创建卷组 (vgcreate)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgcreate centos &#x2F;dev&#x2F;vdb&#123;1,2&#125;    # 创建名称为 &quot;centos&quot; 的卷组
+  Volume group &quot;centos&quot; successfully created</code></pre><h3 id="扫描卷组-vgscan"><a href="#扫描卷组-vgscan" class="headerlink" title="扫描卷组 (vgscan)"></a>扫描卷组 (vgscan)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgscan    # 扫描卷组
+  Reading volume groups from cache.
+  Found volume group &quot;centos&quot; using metadata type lvm2
+$ pvscan    # 扫描物理卷
+  PV &#x2F;dev&#x2F;vdb1   VG centos          lvm2 [&lt;20.00 GiB &#x2F; &lt;20.00 GiB free]
+  PV &#x2F;dev&#x2F;vdb2   VG centos          lvm2 [&lt;20.00 GiB &#x2F; &lt;20.00 GiB free]
+  Total: 2 [39.99 GiB] &#x2F; in use: 2 [39.99 GiB] &#x2F; in no VG: 0 [0   ]</code></pre><h3 id="显示卷组-vgdisplay"><a href="#显示卷组-vgdisplay" class="headerlink" title="显示卷组 (vgdisplay)"></a>显示卷组 (vgdisplay)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgdisplay 
+  --- Volume group ---
+  VG Name               centos
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  1
+  VG Access             read&#x2F;write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               39.99 GiB
+  PE Size               4.00 MiB
+  Total PE              10238
+  Alloc PE &#x2F; Size       0 &#x2F; 0   
+  Free  PE &#x2F; Size       10238 &#x2F; 39.99 GiB
+  VG UUID               UnPBRh-BAYn-1wrd-JCq6-FbmU-xEbq-sbUABc</code></pre><h3 id="减少卷组-vgreduce"><a href="#减少卷组-vgreduce" class="headerlink" title="减少卷组 (vgreduce)"></a>减少卷组 (vgreduce)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgreduce centos &#x2F;dev&#x2F;vdb2    # 将 &quot;&#x2F;dev&#x2F;vdb2&quot; 从卷组 &quot;centos&quot; 中减少
+  Removed &quot;&#x2F;dev&#x2F;vdb2&quot; from volume group &quot;centos&quot;</code></pre><h3 id="扩展卷组-vgextend"><a href="#扩展卷组-vgextend" class="headerlink" title="扩展卷组 (vgextend)"></a>扩展卷组 (vgextend)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgextend centos &#x2F;dev&#x2F;vdb2    # 将 &quot;&#x2F;dev&#x2F;vdb2&quot; 添加到卷组 &quot;centos&quot; 中
+  Volume group &quot;centos&quot; successfully extended</code></pre><h3 id="删除卷组-vgremove"><a href="#删除卷组-vgremove" class="headerlink" title="删除卷组 (vgremove)"></a>删除卷组 (vgremove)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ vgremove centos    # 删除卷组 &quot;centos&quot;
+  Volume group &quot;centos&quot; successfully removed</code></pre><h2 id="3-LV-Logical-Volume-逻辑卷"><a href="#3-LV-Logical-Volume-逻辑卷" class="headerlink" title="3. LV (Logical Volume) 逻辑卷"></a>3. LV (Logical Volume) 逻辑卷</h2><h3 id="lvcreate-命令语法"><a href="#lvcreate-命令语法" class="headerlink" title="lvcreate 命令语法"></a>lvcreate 命令语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"> lvcreate - Create a logical volume
+
+ Create a linear LV.
+ lvcreate -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[    --type linear ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a striped LV (infers --type striped).
+ lvcreate -i|--stripes Number -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -I|--stripesize Size[k|UNIT] ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a raid1 or mirror LV (infers --type raid1|mirror).
+ lvcreate -m|--mirrors Number -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -R|--regionsize Size[m|UNIT] ]
+[    --mirrorlog core|disk ]
+[    --minrecoveryrate Size[k|UNIT] ]
+[    --maxrecoveryrate Size[k|UNIT] ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a raid LV (a specific raid level must be used, e.g. raid1).
+ lvcreate --type raid -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -m|--mirrors Number ]
+[ -i|--stripes Number ]
+[ -I|--stripesize Size[k|UNIT] ]
+[ -R|--regionsize Size[m|UNIT] ]
+[    --minrecoveryrate Size[k|UNIT] ]
+[    --maxrecoveryrate Size[k|UNIT] ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a raid10 LV.
+ lvcreate -m|--mirrors Number -i|--stripes Number -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -I|--stripesize Size[k|UNIT] ]
+[ -R|--regionsize Size[m|UNIT] ]
+[    --minrecoveryrate Size[k|UNIT] ]
+[    --maxrecoveryrate Size[k|UNIT] ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a COW snapshot LV of an origin LV.
+ lvcreate -s|--snapshot -L|--size Size[m|UNIT] LV
+[ -l|--extents Number[PERCENT] ]
+[ -i|--stripes Number ]
+[ -I|--stripesize Size[k|UNIT] ]
+[ -c|--chunksize Size[k|UNIT] ]
+[    --type snapshot ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a thin pool.
+ lvcreate --type thin-pool -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -c|--chunksize Size[k|UNIT] ]
+[ -i|--stripes Number ]
+[ -I|--stripesize Size[k|UNIT] ]
+[    --thinpool LV_new ]
+[    --poolmetadatasize Size[m|UNIT] ]
+[    --poolmetadataspare y|n ]
+[    --discards passdown|nopassdown|ignore ]
+[    --errorwhenfull y|n ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a cache pool.
+ lvcreate --type cache-pool -L|--size Size[m|UNIT] VG
+[ -l|--extents Number[PERCENT] ]
+[ -H|--cache ]
+[ -c|--chunksize Size[k|UNIT] ]
+[    --poolmetadatasize Size[m|UNIT] ]
+[    --poolmetadataspare y|n ]
+[    --cachemode writethrough|writeback|passthrough ]
+[    --cachepolicy String ]
+[    --cachesettings String ]
+[    --cachemetadataformat auto|1|2 ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a thin LV in a thin pool (infers --type thin).
+ lvcreate -V|--virtualsize Size[m|UNIT] --thinpool LV_thinpool VG
+[ -T|--thin ]
+[    --type thin ]
+[    --discards passdown|nopassdown|ignore ]
+[    --errorwhenfull y|n ]
+[ COMMON_OPTIONS ]
+
+ Create a thin LV that is a snapshot of an existing thin LV 
+ (infers --type thin).
+ lvcreate -s|--snapshot LV_thin
+[    --type thin ]
+[    --discards passdown|nopassdown|ignore ]
+[    --errorwhenfull y|n ]
+[ COMMON_OPTIONS ]
+
+ Create a thin LV that is a snapshot of an external origin LV.
+ lvcreate --type thin --thinpool LV_thinpool LV
+[ -T|--thin ]
+[ -c|--chunksize Size[k|UNIT] ]
+[    --poolmetadatasize Size[m|UNIT] ]
+[    --poolmetadataspare y|n ]
+[    --discards passdown|nopassdown|ignore ]
+[    --errorwhenfull y|n ]
+[ COMMON_OPTIONS ]
+
+ Create a thin LV, first creating a thin pool for it, 
+ where the new thin pool is named by the --thinpool arg.
+ lvcreate --type thin -V|--virtualsize Size[m|UNIT] -L|--size Size[m|UNIT] --thinpool LV_new
+[ -l|--extents Number[PERCENT] ]
+[ -T|--thin ]
+[ -c|--chunksize Size[k|UNIT] ]
+[ -i|--stripes Number ]
+[ -I|--stripesize Size[k|UNIT] ]
+[    --poolmetadatasize Size[m|UNIT] ]
+[    --poolmetadataspare y|n ]
+[    --discards passdown|nopassdown|ignore ]
+[    --errorwhenfull y|n ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Create a cache LV, first creating a new origin LV, 
+ then combining it with the existing cache pool named 
+ by the --cachepool arg.
+ lvcreate --type cache -L|--size Size[m|UNIT] --cachepool LV_cachepool VG
+[ -l|--extents Number[PERCENT] ]
+[ -H|--cache ]
+[ -c|--chunksize Size[k|UNIT] ]
+[ -i|--stripes Number ]
+[ -I|--stripesize Size[k|UNIT] ]
+[    --poolmetadatasize Size[m|UNIT] ]
+[    --poolmetadataspare y|n ]
+[    --cachemode writethrough|writeback|passthrough ]
+[    --cachepolicy String ]
+[    --cachesettings String ]
+[    --cachemetadataformat auto|1|2 ]
+[ COMMON_OPTIONS ]
+[ PV ... ]
+
+ Common options for command:
+[ -a|--activate y|n|ay ]
+[ -A|--autobackup y|n ]
+[ -C|--contiguous y|n ]
+[ -M|--persistent y|n ]
+[ -j|--major Number ]
+[ -k|--setactivationskip y|n ]
+[ -K|--ignoreactivationskip ]
+[ -n|--name String ]
+[ -p|--permission rw|r ]
+[ -r|--readahead auto|none|Number ]
+[ -W|--wipesignatures y|n ]
+[ -Z|--zero y|n ]
+[    --addtag Tag ]
+[    --alloc contiguous|cling|cling_by_tags|normal|anywhere|inherit ]
+[    --ignoremonitoring ]
+[    --metadataprofile String ]
+[    --minor Number ]
+[    --monitor y|n ]
+[    --nosync ]
+[    --noudevsync ]
+[    --reportformat basic|json ]
+
+ Common options for lvm:
+[ -d|--debug ]
+[ -h|--help ]
+[ -q|--quiet ]
+[ -v|--verbose ]
+[ -y|--yes ]
+[ -t|--test ]
+[    --commandprofile String ]
+[    --config String ]
+[    --driverloaded y|n ]
+[    --lockopt String ]
+[    --longhelp ]
+[    --profile String ]
+[    --version ]
+
+ Use --longhelp to show all options and advanced commands.</code></pre><h3 id="创建逻辑卷-lvcreate"><a href="#创建逻辑卷-lvcreate" class="headerlink" title="创建逻辑卷 (lvcreate)"></a>创建逻辑卷 (lvcreate)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvcreate -L 20G -n disk1 centos    # 使用卷组 &quot;centos&quot;,创建大小为 20 G,名称为 &quot;disk1&quot; 的逻辑卷
+  Logical volume &quot;disk1&quot; created.</code></pre><h3 id="扫描逻辑卷-lvscan"><a href="#扫描逻辑卷-lvscan" class="headerlink" title="扫描逻辑卷 (lvscan)"></a>扫描逻辑卷 (lvscan)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvscan
+  ACTIVE            &#39;&#x2F;dev&#x2F;centos&#x2F;disk1&#39; [20.00 GiB] inherit</code></pre><h3 id="显示逻辑卷-lvdisplay"><a href="#显示逻辑卷-lvdisplay" class="headerlink" title="显示逻辑卷 (lvdisplay)"></a>显示逻辑卷 (lvdisplay)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvdisplay 
+  --- Logical volume ---
+  LV Path                &#x2F;dev&#x2F;centos&#x2F;disk1
+  LV Name                disk1
+  VG Name                centos
+  LV UUID                8fkMY6-bcdG-dZgu-EYzX-EhGR-2GOk-lLOJCB
+  LV Write Access        read&#x2F;write
+  LV Creation host, time master, 2021-10-26 12:00:00 +0800
+  LV Status              available
+  # open                 0
+  LV Size                20.00 GiB
+  Current LE             5120
+  Segments               2
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           252:0</code></pre><h3 id="减少逻辑卷-lvreduce"><a href="#减少逻辑卷-lvreduce" class="headerlink" title="减少逻辑卷 (lvreduce)"></a>减少逻辑卷 (lvreduce)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvreduce -L 10G &#x2F;dev&#x2F;centos&#x2F;disk1    # 将逻辑卷减少到 10 G
+$ lvreduce -L -10G &#x2F;dev&#x2F;centos&#x2F;disk1    # 将逻辑卷减少 10 G
+  WARNING: Reducing active logical volume to 10.00 GiB.
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce centos&#x2F;disk1? [y&#x2F;n]: y
+  Size of logical volume centos&#x2F;disk1 changed from 20.00 GiB (5120 extents) to 10.00 GiB (2560 extents).
+  Logical volume centos&#x2F;disk1 successfully resized.
+$ lvscan
+  ACTIVE            &#39;&#x2F;dev&#x2F;centos&#x2F;disk1&#39; [10.00 GiB] inherit</code></pre><h3 id="扩展逻辑卷-lvextend"><a href="#扩展逻辑卷-lvextend" class="headerlink" title="扩展逻辑卷 (lvextend)"></a>扩展逻辑卷 (lvextend)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvextend -L +10G &#x2F;dev&#x2F;centos&#x2F;disk1    # 将逻辑卷添加 10 G
+  Size of logical volume centos&#x2F;disk1 changed from 10.00 GiB (2560 extents) to 20.00 GiB (5120 extents).
+  Logical volume centos&#x2F;disk1 successfully resized.</code></pre><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lsblk &#x2F;dev&#x2F;vdb
+NAME             MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+vdb              253:16   0  50G  0 disk 
+├─vdb1           253:17   0  20G  0 part 
+│ └─centos-disk1 252:0    0  20G  0 lvm  
+└─vdb2           253:18   0  20G  0 part 
+  └─centos-disk1 252:0    0  20G  0 lvm</code></pre><h3 id="删除逻辑卷-lvremove"><a href="#删除逻辑卷-lvremove" class="headerlink" title="删除逻辑卷 (lvremove)"></a>删除逻辑卷 (lvremove)</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ lvremove &#x2F;dev&#x2F;centos&#x2F;disk1 
+Do you really want to remove active logical volume centos&#x2F;disk1? [y&#x2F;n]: y
+  Logical volume &quot;disk1&quot; successfully removed</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：Linux LVM 逻辑卷</li><li>本文作者：白羊</li><li>创建时间：2021-12-06 15:07:05</li><li>本文链接：https://www.liruiyi.xyz/page/Linux/Linux LVM逻辑卷/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-prev"><a class="prev" rel="prev" href="/page/Linux/Linux%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9/"><span class="left arrow-icon flex-center"><i class="fas fa-chevron-left"></i> </span><span class="title flex-center"><span class="post-nav-title-item">Linux 磁盘扩容</span> <span class="post-nav-item">上一篇</span></span></a></div><div class="article-next"><a class="next" rel="next" href="/page/Linux/Linux%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/"><span class="title flex-center"><span class="post-nav-title-item">Linux 磁盘管理</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-LVM-%E9%80%BB%E8%BE%91%E5%8D%B7"><span class="nav-text">Linux LVM 逻辑卷</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-PV-Physical-Volume-%E7%89%A9%E7%90%86%E5%8D%B7"><span class="nav-text">1. PV (Physical Volume) 物理卷</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pvcreate-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">pvcreate 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%89%A9%E7%90%86%E5%8D%B7-pvcreate"><span class="nav-text">创建物理卷 (pvcreate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F%E7%89%A9%E7%90%86%E5%8D%B7-pvscan"><span class="nav-text">扫描物理卷 (pvscan)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E7%89%A9%E7%90%86%E5%8D%B7-pvdisplay"><span class="nav-text">显示物理卷 (pvdisplay)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%89%A9%E7%90%86%E5%8D%B7-pvremove"><span class="nav-text">删除物理卷 (pvremove)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-VG-Volumne-Group-%E5%8D%B7%E7%BB%84"><span class="nav-text">2. VG (Volumne Group) 卷组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vgcreate-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">vgcreate 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%8D%B7%E7%BB%84-vgcreate"><span class="nav-text">创建卷组 (vgcreate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F%E5%8D%B7%E7%BB%84-vgscan"><span class="nav-text">扫描卷组 (vgscan)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E5%8D%B7%E7%BB%84-vgdisplay"><span class="nav-text">显示卷组 (vgdisplay)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E5%8D%B7%E7%BB%84-vgreduce"><span class="nav-text">减少卷组 (vgreduce)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%8D%B7%E7%BB%84-vgextend"><span class="nav-text">扩展卷组 (vgextend)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%8D%B7%E7%BB%84-vgremove"><span class="nav-text">删除卷组 (vgremove)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-LV-Logical-Volume-%E9%80%BB%E8%BE%91%E5%8D%B7"><span class="nav-text">3. LV (Logical Volume) 逻辑卷</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lvcreate-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">lvcreate 命令语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91%E5%8D%B7-lvcreate"><span class="nav-text">创建逻辑卷 (lvcreate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F%E9%80%BB%E8%BE%91%E5%8D%B7-lvscan"><span class="nav-text">扫描逻辑卷 (lvscan)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E9%80%BB%E8%BE%91%E5%8D%B7-lvdisplay"><span class="nav-text">显示逻辑卷 (lvdisplay)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E9%80%BB%E8%BE%91%E5%8D%B7-lvreduce"><span class="nav-text">减少逻辑卷 (lvreduce)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%80%BB%E8%BE%91%E5%8D%B7-lvextend"><span class="nav-text">扩展逻辑卷 (lvextend)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E9%80%BB%E8%BE%91%E5%8D%B7-lvremove"><span class="nav-text">删除逻辑卷 (lvremove)</span></a></li></ol></li></ol></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>Shell 脚本的最佳实践 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">Shell 脚本的最佳实践</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2021-06-23 16:03:48 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Linux/">Linux</a>&nbsp;</li></ul></span><span class="article-tags article-meta-item"><i class="fas fa-tags"></i>&nbsp;<ul><li><a href="/tags/Shell/">Shell</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="Shell-脚本的最佳实践"><a href="#Shell-脚本的最佳实践" class="headerlink" title="Shell 脚本的最佳实践"></a>Shell 脚本的最佳实践</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">#!&#x2F;usr&#x2F;bin&#x2F;env bash</code></pre><br><h2 id="1-定义变量"><a href="#1-定义变量" class="headerlink" title="1. 定义变量"></a>1. 定义变量</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">PATH&#x3D;$&#123;PATH:-&#39;&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;bin&#39;&#125;
+
+$&#123;var:-word&#125;
+$&#123;var:&#x3D;word&#125;
+$&#123;var:?word&#125;
+$&#123;var:+word&#125;
+
+$0
+$#
+$*
+$?
+$$
+$!
+$_
+DI&#x3D;&quot;$(cd &quot;$(dirname &quot;$0&quot;)&quot; &amp;&amp; pwd)&quot;</code></pre><p><strong>Shell 中的特殊变量：</strong></p><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"># 定义环境变量
+export PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;bin:&#x2F;root&#x2F;bin
+
+# 定义超时时间
+export TMOUT&#x3D;300
+
+# 定义 Bash 提示符
+export PS1&#x3D;&#39;[\u@\h \W]\$&#39;
+
+# 定义历史记录格式
+export HISTTIMEFORMAT&#x3D;&#39;%F %T &#39;
+history
+1  2020-01-01 12:00:00 exit
+
+# 定义提示符(PS1)出现之前的命令
+export PROMPT_COMMAND&#x3D;&#39;echo hello&#39;
+
+# 获取当前函数名
+main () &#123; echo $&#123;FUNCNAME&#125;; &#125;
+main
+
+# 获取当前执行行号
+echo $LINENO
+
+# 获取当前工作目录
+echo $PWD
+
+# 获取脚本运行的时间
+echo $SECONDS
+
+# 获取 Shell 的版本
+for((i&#x3D;0;i&lt;&#x3D;5;i++));do echo &quot;BASH_VERSINFO[$i]&#x3D;$&#123;BASH_VERSINFO[$i]&#125;&quot;; done
+
+# 捕获正则匹配数组
+[[ &quot;Docker version 20.10.11&quot; &#x3D;~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]
+for((i&#x3D;0;i&lt;&#x3D;3;i++));do echo &quot;BASH_REMATCH[$i]&#x3D;$&#123;BASH_REMATCH[$i]&#125;&quot;; done
+
+# 获取随机数(0-32767)
+echo $RANDOM</code></pre><br><h2 id="2-检查是否以-root-身份运行"><a href="#2-检查是否以-root-身份运行" class="headerlink" title="2. 检查是否以 root 身份运行"></a>2. 检查是否以 root 身份运行</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">check_if_running_as_root() &#123;
+  if [[ &quot;$UID&quot; -ne &#39;0&#39; ]]; then
+    echo &quot;WARNING: The user currently executing this script is not root.&quot;
+    read -r -p &quot;Are you sure you want to continue? [y&#x2F;n] &quot; enter_information
+    if [[ &quot;$&#123;enter_information:0:1&#125;&quot; &#x3D; &#39;y&#39; ]]; then
+      echo &quot;Continuing the installation with current user...&quot;
+    else
+      echo &quot;Not running with root, exiting...&quot;
+      exit 1
+    fi
+  fi
+&#125;
+check_if_running_as_root</code></pre><br><h2 id="3-输出文本高亮显示"><a href="#3-输出文本高亮显示" class="headerlink" title="3. 输出文本高亮显示"></a>3. 输出文本高亮显示</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">#!&#x2F;bin&#x2F;bash
+RESET&#x3D;$(tput sgr0)          # 重置所有属性(&#39;\033[00m&#39;)
+BLACK&#x3D;$(tput setaf 0)       # 黑色,(&#39;\033[30m&#39;)
+RED&#x3D;$(tput setaf 1)         # 红色,(&#39;\033[31m&#39;)
+GREEN&#x3D;$(tput setaf 2)       # 绿色,(&#39;\033[32m&#39;)
+YELLOW&#x3D;$(tput setaf 3)      # 黄色,(&#39;\033[33m&#39;)
+BLUE&#x3D;$(tput setaf 4)        # 蓝色,(&#39;\033[34m&#39;)
+MAGENTA&#x3D;$(tput setaf 5)     # 品红,(&#39;\033[35m&#39;)
+CYAN&#x3D;$(tput setaf 6)        # 青色,(&#39;\033[36m&#39;)
+WHITE&#x3D;$(tput setaf 7)       # 白色,(&#39;\033[37m&#39;)
+BOLD&#x3D;$(tput bold)           # 加粗,(&#39;\033[01m&#39;)
+BLINK&#x3D;$(tput blink)         # 闪烁,(&#39;\033[05m&#39;)
+SMSO&#x3D;$(tput smso)           # 高亮,(&#39;\033[07m&#39;)
+SMUL&#x3D;$(tput smul)           # 下划线,(&#39;\033[04m&#39;)
+CIVIS&#x3D;$(tput civis)         # 隐藏光标,(&#39;\033[?25l&#39;)
+CNORM&#x3D;$(tput c)         # 显示光标,(&#39;\033[?25h&#39;)
+
+log::error () &#123;
+    printf &quot;$&#123;RED&#125;[ERROR]$&#123;RESET&#125; %b\n&quot; &quot;$@&quot;
+&#125;
+log::warning () &#123;
+    printf &quot;$&#123;YELLOW&#125;[WARNGIN]$&#123;RESET&#125; %b\n&quot; &quot;$@&quot;
+&#125;
+log::info () &#123;
+    printf &quot;$&#123;GREEN&#125;[INFO]$&#123;RESET&#125; %b\n&quot; &quot;$@&quot;
+&#125;
+log::debug () &#123;
+    printf &quot;$&#123;WHITE&#125;[DEBUG]$&#123;RESET&#125; %b\n&quot; &quot;$@&quot;
+&#125;</code></pre><br><h2 id="4-打印菜单"><a href="#4-打印菜单" class="headerlink" title="4. 打印菜单"></a>4. 打印菜单</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">menu() &#123;
+cat &lt;&lt;EOF
+1) 查看当前用户
+2) 查看主机名称
+3) 查看环境变量
+EOF
+read -p &quot;输入序号:&quot; num
+case $num in
+  1)
+  echo $USER
+  ;;
+  2)
+  echo $HOSTNAME
+  ;;
+  3)
+  echo $PATH
+  ;;
+  *)
+  echo &#39;*&#39;
+esac
+&#125;
+menu</code></pre><br><h2 id="5-数学运算"><a href="#5-数学运算" class="headerlink" title="5. 数学运算"></a>5. 数学运算</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">expr 1 + 5
+
+var1&#x3D;$[ 1 + 5 ]</code></pre><br><h2 id="6-读取文件每一行内容"><a href="#6-读取文件每一行内容" class="headerlink" title="6. 读取文件每一行内容"></a>6. 读取文件每一行内容</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">read_line ()
+&#123;
+    while read -r line ; do
+        echo &quot;$&#123;line&#125;&quot;
+    done &lt; &quot;$&#123;FILE&#125;&quot;
+&#125;
+FILE&#x3D;&quot;&quot;
+read_line</code></pre><h2 id="7-分支结构-case-in"><a href="#7-分支结构-case-in" class="headerlink" title="7. 分支结构 (case in)"></a>7. 分支结构 (case in)</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">case &#39;&#39; in
+  &#39;-a | -all&#39;)
+  print aaa
+  ;;
+  *)
+  echo &quot;&quot;
+  ;;
+esac</code></pre><h2 id="8-捕获中断-trap"><a href="#8-捕获中断-trap" class="headerlink" title="8. 捕获中断 (trap)"></a>8. 捕获中断 (trap)</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">control_c () &#123;
+    printf &quot;\nCtrl-C,GoodBye!\n&quot;
+    exit 1
+&#125;
+trap control_c SIGINT</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：Shell 脚本的最佳实践</li><li>本文作者：白羊</li><li>创建时间：2021-06-23 16:03:48</li><li>本文链接：https://www.liruiyi.xyz/page/Linux/Shell实践/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-prev"><a class="prev" rel="prev" href="/page/Tools/Clash%E8%AE%A2%E9%98%85%E8%BD%AC%E6%8D%A2/"><span class="left arrow-icon flex-center"><i class="fas fa-chevron-left"></i> </span><span class="title flex-center"><span class="post-nav-title-item">搭建 Clash 订阅转换</span> <span class="post-nav-item">上一篇</span></span></a></div><div class="article-next"><a class="next" rel="next" href="/page/Tools/OneIndex/"><span class="title flex-center"><span class="post-nav-title-item">搭建 OneIndex 个人网盘</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-%E8%84%9A%E6%9C%AC%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-text">Shell 脚本的最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-text">1. 定义变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E4%BB%A5-root-%E8%BA%AB%E4%BB%BD%E8%BF%90%E8%A1%8C"><span class="nav-text">2. 检查是否以 root 身份运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%BE%93%E5%87%BA%E6%96%87%E6%9C%AC%E9%AB%98%E4%BA%AE%E6%98%BE%E7%A4%BA"><span class="nav-text">3. 输出文本高亮显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%89%93%E5%8D%B0%E8%8F%9C%E5%8D%95"><span class="nav-text">4. 打印菜单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97"><span class="nav-text">5. 数学运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E6%AF%8F%E4%B8%80%E8%A1%8C%E5%86%85%E5%AE%B9"><span class="nav-text">6. 读取文件每一行内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%88%86%E6%94%AF%E7%BB%93%E6%9E%84-case-in"><span class="nav-text">7. 分支结构 (case in)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%8D%95%E8%8E%B7%E4%B8%AD%E6%96%AD-trap"><span class="nav-text">8. 捕获中断 (trap)</span></a></li></ol></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>

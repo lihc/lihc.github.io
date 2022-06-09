@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="keywords" content="Hexo"><meta name="description" content="First i need your hand, then forever can begin."><meta name="author" content="白羊"><title>Linux 修改密码 | 一条理想鱼</title><link rel="stylesheet" href="/css/style.css"><link rel="shortcut icon" href="/images/favicon.svg"><link rel="stylesheet" href="/css/font-awesome.min.css"><script id="hexo-configurations">let KEEP=window.KEEP||{};KEEP.hexo_config={hostname:"www.liruiyi.xyz",root:"/",language:"zh-CN",path:"search.xml"},KEEP.theme_config={toc:{enable:!0,number:!1,expand_all:!1,init_open:!1},style:{primary_color:"#0066CC",avatar:"/avatar.png",favicon:"/images/favicon.svg",article_img_align:"left",left_side_width:"260px",content_max_width:"920px",hover:{shadow:!0,scale:!0},first_screen:{enable:!0,background_img:"/images/bg.svg",description:"First i need your hand, then forever can begin."},scroll:{progress_bar:{enable:!0},percent:{enable:!1}}},local_search:{enable:!0,preload:!1},code_copy:{enable:"ture",style:"default"},pjax:{enable:!1},lazyload:{enable:!1},version:"3.4.3"},KEEP.language_ago={second:"%s 秒前",minute:"%s 分钟前",hour:"%s 小时前",day:"%s 天前",week:"%s 周前",month:"%s 月前",year:"%s 年前"}</script><link rel="stylesheet" href="/css/prism.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="一条理想鱼" type="application/atom+xml">
+</head><body><div class="progress-bar-container"><span class="scroll-progress-bar"></span></div><main class="page-container"><div class="page-main-content"><div class="page-main-content-top"><header class="header-wrapper"><div class="header-content"><div class="left"><a class="logo-title" href="/">一条理想鱼</a></div><div class="right"><div class="pc"><ul class="menu-list"><li class="menu-item"><a class="active" href="/">首页</a></li><li class="menu-item"><a href="/archives">归档</a></li><li class="menu-item"><a href="/categories">分类</a></li><li class="menu-item"><a href="/tags">标签</a></li><li class="menu-item"><a href="/links">链接</a></li><li class="menu-item"><a href="/about">关于</a></li><li class="menu-item search search-popup-trigger"><i class="fas fa-search"></i></li></ul></div><div class="mobile"><div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div><div class="icon-item menu-bar"><div class="menu-bar-middle"></div></div></div></div></div><div class="header-drawer"><ul class="drawer-menu-list"><li class="drawer-menu-item flex-center"><a class="active" href="/">首页</a></li><li class="drawer-menu-item flex-center"><a href="/archives">归档</a></li><li class="drawer-menu-item flex-center"><a href="/categories">分类</a></li><li class="drawer-menu-item flex-center"><a href="/tags">标签</a></li><li class="drawer-menu-item flex-center"><a href="/links">链接</a></li><li class="drawer-menu-item flex-center"><a href="/about">关于</a></li></ul></div><div class="window-mask"></div></header></div><div class="page-main-content-middle"><div class="main-content"><div class="fade-in-down-animation"><div class="article-content-container"><div class="article-title"><span class="title-hover-animation">Linux 修改密码</span></div><div class="article-header"><div class="avatar"><img src="/avatar.png"></div><div class="info"><div class="author"><span class="name">白羊</span></div><div class="meta-info"><div class="article-meta-info"><span class="article-date article-meta-item"><i class="fas fa-edit"></i>&nbsp;2022-02-24 08:51:00 </span><span class="article-categories article-meta-item"><i class="fas fa-folder"></i>&nbsp;<ul><li><a href="/categories/Linux/">Linux</a>&nbsp;</li></ul></span><span class="article-pv article-meta-item"><i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span></span></div></div></div></div><div class="article-content markdown-body"><h1 id="Linux-修改密码"><a href="#Linux-修改密码" class="headerlink" title="Linux 修改密码"></a>Linux 修改密码</h1><h2 id="passwd-命令语法"><a href="#passwd-命令语法" class="headerlink" title="passwd 命令语法"></a>passwd 命令语法</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd --help
+Usage: passwd [OPTION...] &lt;accountName&gt;
+  -k, --keep-tokens       keep non-expired authentication tokens
+  -d, --delete            delete the password for the named account (root only)
+  -l, --lock              lock the password for the named account (root only)
+  -u, --unlock            unlock the password for the named account (root only)
+  -e, --expire            expire the password for the named account (root only)
+  -f, --force             force operation
+  -x, --maximum&#x3D;DAYS      maximum password lifetime (root only)
+  -n, --minimum&#x3D;DAYS      minimum password lifetime (root only)
+  -w, --warning&#x3D;DAYS      number of days warning users receives before password
+                          expiration (root only)
+  -i, --inactive&#x3D;DAYS     number of days after password expiration when an account
+                          becomes disabled (root only)
+  -S, --status            report password status on the named account (root only)
+  --stdin                 read new tokens from stdin (root only)
+
+Help options:
+  -?, --help              Show this help message
+  --usage                 Display brief usage message</code></pre><h2 id="修改用户密码"><a href="#修改用户密码" class="headerlink" title="修改用户密码"></a>修改用户密码</h2><p><strong>修改当前用户(root)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd
+Changing password for user root.
+New password: 
+BAD PASSWORD: The password is a palindrome
+Retype new password: 
+passwd: all authentication tokens updated successfully.</code></pre><p><strong>修改其他用户(tom)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd tom
+Changing password for user tom.
+New password: 
+BAD PASSWORD: The password is a palindrome
+Retype new password: 
+passwd: all authentication tokens updated successfully.</code></pre><p><strong>查看其他用户(tom)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -S tom
+tom PS 1970-01-01 0 99999 7 -1 (Password set, SHA512 crypt.)</code></pre><p><strong>锁定其他用户(tom)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -l tom
+Locking password for user tom.
+passwd: Success</code></pre><p><strong>解锁其他用户(tom)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -u tom
+Unlocking password for user tom.
+passwd: Success</code></pre><p><strong>设置用户(tom)最长密码有效期：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -x 90 tom
+Adjusting aging data for user tom.
+passwd: Success
+# 设置 tom 用户的最长有效期为 90 天</code></pre><p><strong>设置用户(tom)最短密码有效期：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -n 30 tom
+Adjusting aging data for user tom.
+passwd: Success
+# 设置 tom 用户的最短有效期为 30 天</code></pre><p><strong>密码到期前用户(tom)收到警告的天数：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -w 7 tom
+Adjusting aging data for user tom.
+passwd: Success
+# 设置 tom 用户密码到期前7天(默认)收到警告</code></pre><p><strong>设置用户(tom)的密码过期：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -e tom
+Expiring password for user tom.
+passwd: Success</code></pre><p><strong>密码过期后账户被禁用的天数：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -i -1 tom
+Adjusting aging data for user tom.
+passwd: Success</code></pre><p><strong>删除用户(tom)的密码：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd -d tom
+Removing password for user tom.
+passwd: Success</code></pre><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ chage -l tom
+Last password change		: Feb 26, 2022
+Password expires									: May 27, 2022
+Password inactive									: never
+Account expires										: never
+Minimum number of days between password change		: 30
+Maximum number of days between password change		: 90
+Number of days of warning before password expires	: 7</code></pre><p><strong>passwd 中文语法：</strong></p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ passwd --help
+Usage: passwd [选项...] &lt;帐户名称&gt;
+  -k, --keep-tokens       保留未过期的身份验证令牌
+  -d, --delete            删除指定帐户的密码（仅限 root）
+  -l, --lock              锁定指定帐户的密码（仅限 root）
+  -u, --unlock            解锁指定帐户的密码（仅限 root）
+  -e, --expire            使指定帐户的密码过期（仅限 root）
+  -f, --force             强制操作
+  -x, --maximum&#x3D;DAYS      最长密码有效期（仅限 root）
+  -n, --minimum&#x3D;DAYS      最短密码有效期（仅限 root）
+  -w, --warning&#x3D;DAYS      密码到期前用户收到警告的天数（仅限 root）
+  -i, --inactive&#x3D;DAYS     密码过期后帐户被禁用的天数（仅限 root）
+  -S, --status            报告指定帐户的密码状态（仅限 root）
+  --stdin                 从标准输入读取新令牌（仅限 root）
+
+Help options:
+  -?, --help              显示此帮助消息
+  --usage                 显示简要使用信息</code></pre><h1 id="单用户修改-root-密码"><a href="#单用户修改-root-密码" class="headerlink" title="单用户修改 root 密码"></a>单用户修改 root 密码</h1><p>重启机器，当开机出现引导菜单时，按 e 进入编辑界面。</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">init&#x3D;&#x2F;sysroot&#x2F;bin&#x2F;sh
+Ctrl + X
+chroot &#x2F;sysroot&#x2F;
+mount -o remount,rw &#x2F;
+passwd
+touch &#x2F; .autorelabel
+Ctrl + D
+reboot</code></pre></div><div class="post-copyright-info"><div class="article-copyright-info-container"><ul><li>本文标题：Linux 修改密码</li><li>本文作者：白羊</li><li>创建时间：2022-02-24 08:51:00</li><li>本文链接：https://www.liruiyi.xyz/page/Linux/Linux修改密码/</li><li>版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div></div><div class="article-nav"><div class="article-prev"><a class="prev" rel="prev" href="/page/Tools/Fail2ban/"><span class="left arrow-icon flex-center"><i class="fas fa-chevron-left"></i> </span><span class="title flex-center"><span class="post-nav-title-item">Fail2ban 工具</span> <span class="post-nav-item">上一篇</span></span></a></div><div class="article-next"><a class="next" rel="next" href="/page/Other/MacOS%E5%AE%89%E8%A3%85Telnet/"><span class="title flex-center"><span class="post-nav-title-item">MacOS 安装 Telnet</span> <span class="post-nav-item">下一篇</span> </span><span class="right arrow-icon flex-center"><i class="fas fa-chevron-right"></i></span></a></div></div><div class="comment-container"><div class="comments-container"><div id="comment-anchor"></div><div class="comment-area-title"><i class="fas fa-comments">&nbsp;评论</i></div><div class="twikoo-container"><script src="/css/twikoo.all.min.js"></script><div id="twikoo-comment"></div><script>function loadTwikoo(){twikoo.init({el:"#twikoo-comment",envId:"https://twikoo-lihc.vercel.app/",region:""})}{const o=setTimeout(()=>{loadTwikoo(),clearTimeout(o)},1e3)}</script></div></div></div></div></div></div></div><div class="page-main-content-bottom"><footer class="footer"><div class="info-container"><div class="copyright-info info-item">&copy; <span>2020</span> - 2022&nbsp;<i class="fas fa-at"></i>&nbsp;<a href="/">白羊</a></div><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="website-count info-item"></div><div class="theme-info info-item">由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a></div></div></footer></div></div><div class="post-tools"><div class="post-tools-container"><ul class="tools-list"><li class="tools-item page-aside-toggle"><i class="fas fa-outdent"></i></li><li class="go-comment"><i class="fas fa-comment"></i></li></ul></div></div><div class="right-bottom-side-tools"><div class="side-tools-container"><ul class="side-tools-list"><li class="tools-item tool-font-adjust-plus flex-center"><i class="fas fa-search-plus"></i></li><li class="tools-item tool-font-adjust-minus flex-center"><i class="fas fa-search-minus"></i></li><li class="tools-item tool-expand-width flex-center"><i class="fas fa-arrows-alt-h"></i></li><li class="tools-item tool-dark-light-toggle flex-center"><i class="fas fa-moon"></i></li><li class="tools-item rss flex-center"><a class="flex-center" href="/atom.xml" target="_blank"><i class="fas fa-rss"></i></a></li><li class="tools-item tool-scroll-to-top flex-center"><i class="fas fa-arrow-up"></i></li><li class="tools-item tool-scroll-to-bottom flex-center"><i class="fas fa-arrow-down"></i></li></ul><ul class="exposed-tools-list"><li class="tools-item tool-toggle-show flex-center"><i class="fas fa-cog fa-spin"></i></li></ul></div></div><aside class="page-aside"><div class="post-toc-wrap"><div class="post-toc"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="nav-text">Linux 修改密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#passwd-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-text">passwd 命令语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81"><span class="nav-text">修改用户密码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E7%94%A8%E6%88%B7%E4%BF%AE%E6%94%B9-root-%E5%AF%86%E7%A0%81"><span class="nav-text">单用户修改 root 密码</span></a></li></ol></div></div></aside><div class="image-viewer-container"><img src=""></div><div class="search-pop-overlay"><div class="popup search-popup"><div class="search-header"><span class="search-input-field-pre"><i class="fas fa-keyboard"></i></span><div class="search-input-container"><input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input"></div><span class="popup-btn-close"><i class="fas fa-times"></i></span></div><div id="search-result"><div id="no-result"><i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i></div></div></div></div></main><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/header-shrink.js"></script><script src="/js/back2top.js"></script><script src="/js/dark-light-toggle.js"></script><script src="/js/local-search.js"></script><script src="/js/code-copy.js"></script><div class="post-scripts"><script src="/js/left-side-toggle.js"></script><script src="/js/libs/anime.min.js"></script><script src="/js/toc.js"></script></div><script src="/js/prism.js"></script></body></html>
