@@ -186,7 +186,7 @@ log::info "Create nginx service file."
 
 remove_nginx ()
 {
-    log::error "This option is not available..."
+    log::error "Sorry, this option is temporarily unavailable..."
 }
 
 script_parameters ()
