@@ -11,7 +11,7 @@ DOWNLOAD_DIR=${DOWNLOAD_DIR:-'/usr/local/src'}
 INSTALL_PATH=${INSTALL_PATH:-'/usr/local/nginx'}
 NGINX_USER=${NGINX_USER:-'nginx'}
 NGINX_DEPEND=${NGINX_DEPEND:-'gcc gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel'}
-NGINX_DOWN_URL=${NGINX_DOWN_URL:-"http://nginx.org/download/nginx-"${NGINX_VERSION}".tar.gz"}
+NGINX_DOWN_URL=${NGINX_DOWN_URL:-"http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"}
 
 COMPILE_OPTIONS="--prefix=$INSTALL_PATH \
 --user=$NGINX_USER --group=$NGINX_USER \
@@ -133,7 +133,9 @@ create_nginx_user ()
 install_nginx ()
 {
     cd "${DOWNLOAD_DIR}/nginx-$NGINX_VERSION" || exit 1
-    if ./configure ${COMPILE_OPTIONS}; then
+    CONFIGURE_COMMAND="./configure ${COMPILE_OPTIONS}"
+    # Do not put double quotes around the variable "CONFIGURE_COMMAND".
+    if ${CONFIGURE_COMMAND}; then
         log::info "Configure Nginx-${NGINX_VERSION} successful."
 
         if make;then
@@ -242,17 +244,17 @@ main ()
 
     if [[ "${SKIP_DEPEND}" != 'yes' ]]; then
         read -r -a DEPEND <<< "${NGINX_DEPEND}"
-        DEPEND=($NGINX_DEPEND)
+        #DEPEND=($NGINX_DEPEND)
         for i in "${DEPEND[@]}";do
             install_software "$i"
         done
     fi
 
     download_nginx
-    create_nginx_user ${NGINX_USER}
+    create_nginx_user "${NGINX_USER}"
     install_nginx
     install_service
-    ln -s $INSTALL_PATH/sbin/nginx /usr/local/sbin/
+    ln -s "${INSTALL_PATH}"/sbin/nginx /usr/local/sbin/
     ln -s /usr/local/nginx/conf/ /etc/nginx
     log::info "Install Nginx-${NGINX_VERSION} successful."
 

@@ -20,6 +20,7 @@ DOMAIN-SUFFIX,fanatical.com
 DOMAIN-SUFFIX,humblebundle.com
 DOMAIN-SUFFIX,steamcommunity.com
 DOMAIN-SUFFIX,api.steampowered.com
+DOMAIN-SUFFIX,store.steampowered.com
 
 # DOMAIN-SUFFIX,steampowered.com
 # DOMAIN-SUFFIX,community.akamai.steamstatic.com
