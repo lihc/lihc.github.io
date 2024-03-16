@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Nginx 常用功能 - 白羊</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="白羊"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="白羊"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、Nginx信号控制Nginx 可以通过信号进行控制。默认情况下，主进程 ID 被写入 &amp;#x2F;usr&amp;#x2F;local&amp;#x2F;nginx&amp;#x2F;logs&amp;#x2F;nginx.pid文件。 主进程支持以下信号：    信号 说明    TERM, INT fast shutdown #快速关闭   QUIT graceful shutdown #正常关闭   HUP changing configuration。 #平滑的重读"><meta property="og:type" content="blog"><meta property="og:title" content="Nginx 常用功能"><meta property="og:url" content="https://www.lihaicheng.com/page/Nginx%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"><meta property="og:site_name" content="白羊"><meta property="og:description" content="一、Nginx信号控制Nginx 可以通过信号进行控制。默认情况下，主进程 ID 被写入 &amp;#x2F;usr&amp;#x2F;local&amp;#x2F;nginx&amp;#x2F;logs&amp;#x2F;nginx.pid文件。 主进程支持以下信号：    信号 说明    TERM, INT fast shutdown #快速关闭   QUIT graceful shutdown #正常关闭   HUP changing configuration。 #平滑的重读"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.lihaicheng.com/img/og_image.png"><meta property="article:published_time" content="2020-07-01T14:10:01.000Z"><meta property="article:modified_time" content="2022-06-20T02:01:47.956Z"><meta property="article:author" content="白羊"><meta property="article:tag" content="Nginx"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://www.lihaicheng.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.lihaicheng.com/page/Nginx%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"},"headline":"Nginx 常用功能","image":["https://www.lihaicheng.com/img/og_image.png"],"datePublished":"2020-07-01T14:10:01.000Z","dateModified":"2022-06-20T02:01:47.956Z","author":{"@type":"Person","name":"白羊"},"publisher":{"@type":"Organization","name":"白羊","logo":{"@type":"ImageObject","url":"https://www.lihaicheng.com/img/avatar.png"}},"description":"一、Nginx信号控制Nginx 可以通过信号进行控制。默认情况下，主进程 ID 被写入 &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;logs&#x2F;nginx.pid文件。 主进程支持以下信号：    信号 说明    TERM, INT fast shutdown #快速关闭   QUIT graceful shutdown #正常关闭   HUP changing configuration。 #平滑的重读"}</script><link rel="canonical" href="https://www.lihaicheng.com/page/Nginx%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/avatar.png" alt="白羊" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-07-01T14:10:01.000Z" title="2020/7/1 22:10:01">2020-07-01</time>发表</span><span class="level-item"><time dateTime="2022-06-20T02:01:47.956Z" title="2022/6/20 10:01:47">2022-06-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Nginx/">Nginx</a></span><span class="level-item">16 分钟读完 (大约2329个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Nginx 常用功能</h1><div class="content"><h1 id="一、Nginx信号控制"><a href="#一、Nginx信号控制" class="headerlink" title="一、Nginx信号控制"></a>一、Nginx信号控制</h1><p>Nginx 可以通过信号进行控制。默认情况下，主进程 ID 被写入 <code>/usr/local/nginx/logs/nginx.pid</code>文件。</p>
+<p>主进程支持以下信号：</p>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TERM, INT</td>
+<td>fast shutdown #快速关闭</td>
+</tr>
+<tr>
+<td>QUIT</td>
+<td>graceful shutdown #正常关闭</td>
+</tr>
+<tr>
+<td>HUP</td>
+<td>changing configuration。 #平滑的重读配置文件</td>
+</tr>
+<tr>
+<td>USR1</td>
+<td>re-opening log files #重读日志文件</td>
+</tr>
+<tr>
+<td>USR2</td>
+<td>upgrading an executable file #升级可执行文件(平滑的升级)</td>
+</tr>
+<tr>
+<td>WINCH</td>
+<td>graceful shutdown of worker processes #正常关闭工作进程(配合USR2进行升级)</td>
+</tr>
+</tbody></table>
+<p>命令语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> [信号] PID</span><br></pre></td></tr></table></figure>
+
+<p>查看 Nginx 进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ps -aux | grep nginx</span><br><span class="line">root      35129  0.0  0.0  45984  1128 ?        Ss   11:08   0:00 nginx: master process /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</span><br><span class="line">nginx     35130  0.0  0.1  46412  1884 ?        S    11:08   0:00 nginx: worker process</span><br><span class="line">root      35140  0.0  0.0 112812   976 pts/0    S+   11:08   0:00 grep --color=auto nginx</span><br></pre></td></tr></table></figure>
+
+<p>优雅的重启 Nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -HUP 35129</span><br></pre></td></tr></table></figure>
+
+<p>不查看进程，重启 Nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -HUP `<span class="built_in">cat</span> /usr/local/nginx/logs/nginx.pid`</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="二、静态网站部署"><a href="#二、静态网站部署" class="headerlink" title="二、静态网站部署"></a>二、静态网站部署</h1><p>查看配置文件（省略部分内容）</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  localhost;</span><br><span class="line">        </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   html;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>server：代表一个虚拟主机。</li>
+<li>listen：监听端口。</li>
+<li>server_name：主机名称。</li>
+<li>location：主机配置。</li>
+<li>root：网站目录，<code>html</code>目录在<code>/usr/local/nginx/</code>下。</li>
+<li>index：首页文件。</li>
+</ul>
+<p>将静态网页放在<code>/usr/local/nginx/html</code>下，访问主机 80 端口即可。</p>
+<h1 id="三、配置虚拟主机"><a href="#三、配置虚拟主机" class="headerlink" title="三、配置虚拟主机"></a>三、配置虚拟主机</h1><p>虚拟主机，也叫“网站空间”，就是把一台运行在互联网上的物理服务器划分成多个“虚拟”服务器。虚拟主机技术极大的促进了网络技术的应用和普及。</p>
+<p>划分虚拟主机的三种方法：</p>
+<ul>
+<li>基于端口划分虚拟主机</li>
+<li>基于域名划分虚拟主机</li>
+<li>基于 IP 地址划分虚拟主机</li>
+</ul>
+<h2 id="基于端口划分"><a href="#基于端口划分" class="headerlink" title="基于端口划分"></a>基于端口划分</h2><p>修改配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">8080</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  localhost;</span><br><span class="line">        </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server1;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">8081</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  localhost;</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server2;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>http</code>下添加<code>server</code>字段</p>
+<p>虚拟主机 server1 监听 8080 端口，网页文件(root)存放在<code>/usr/local/nginx/server1</code>文件夹下</p>
+<p>虚拟主机 server2 监听 8081 端口，网页文件(root)存放在<code>/usr/local/nginx/server2</code>文件夹下</p>
+<h2 id="基于域名划分"><a href="#基于域名划分" class="headerlink" title="基于域名划分"></a>基于域名划分</h2><p>修改配置文件</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  www.server1.com;</span><br><span class="line">        </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server1;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  www.server2.com;</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server2;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>server1 中 <code>server_name</code> 配置为<code>www.server1.com</code>，使用域名访问网站。</p>
+<p>server2 中 <code>server_name</code> 配置为<code>www.server2.com</code>，使用域名访问网站。</p>
+<h2 id="基于IP地址划分"><a href="#基于IP地址划分" class="headerlink" title="基于IP地址划分"></a>基于IP地址划分</h2><p>查看当前 IP 地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip address</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    <span class="built_in">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    <span class="built_in">link</span>/ether 00:0c:29:4e:e6:74 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.10.20/24 brd 192.168.10.255 scope global noprefixroute ens33</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::e8f:7f0d:69ea:cfc3/64 scope <span class="built_in">link</span> noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+<p>当前 IP 地址为 192.168.10.20</p>
+<p>然后创建一个虚拟 IP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig ens33:1 192.168.10.21/24</span><br></pre></td></tr></table></figure>
+
+<p>查看 IP 地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    <span class="built_in">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    <span class="built_in">link</span>/ether 00:0c:29:4e:e6:74 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.10.20/24 brd 192.168.10.255 scope global noprefixroute ens33</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet 192.168.10.21/24 brd 192.168.10.255 scope global secondary ens33:1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::e8f:7f0d:69ea:cfc3/64 scope <span class="built_in">link</span> noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+<p>修改 Nginx 配置文件</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  <span class="number">192.168.10.20</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server1;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  <span class="number">192.168.10.21</span>;</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/local/nginx/server2;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>server1 中 <code>server_name</code> 配置为<code>192.168.10.20</code>，使用 IP 地址访问网站。</p>
+<p>server2 中 <code>server_name</code> 配置为<code>192.168.10.21</code>，使用 IP 地址访问网站。</p>
+<h1 id="四、Nginx日志切割"><a href="#四、Nginx日志切割" class="headerlink" title="四、Nginx日志切割"></a>四、Nginx日志切割</h1><p>Nginx 日志默认格式</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">log_format</span>  main  <span class="string">&#x27;<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] &quot;<span class="variable">$request</span>&quot; &#x27;</span></span><br><span class="line">                  <span class="string">&#x27;<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> &quot;<span class="variable">$http_referer</span>&quot; &#x27;</span></span><br><span class="line">                  <span class="string">&#x27;&quot;<span class="variable">$http_user_agent</span>&quot; &quot;<span class="variable">$http_x_forwarded_for</span>&quot;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>各项参数说明：</p>
+<table>
+<thead>
+<tr>
+<th><strong>变量名称</strong></th>
+<th><strong>变量描述</strong></th>
+<th><strong>举例说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$remote_addr</td>
+<td>客户端地址</td>
+<td>113.140.15.90</td>
+</tr>
+<tr>
+<td>$remote_user</td>
+<td>客户端用户名称</td>
+<td>–</td>
+</tr>
+<tr>
+<td>$time_local</td>
+<td>访问时间和时区</td>
+<td>18&#x2F;Jul&#x2F;2012:17:00:01 +0800</td>
+</tr>
+<tr>
+<td>$request</td>
+<td>请求的URI和HTTP协议</td>
+<td>“GET &#x2F;pa&#x2F;img&#x2F;home&#x2F;logo-alipay-t.png HTTP&#x2F;1.1″</td>
+</tr>
+<tr>
+<td>$http_host</td>
+<td>请求地址，即浏览器中你输入的地址（IP或域名）</td>
+<td>img.alipay.com10.253.70.103</td>
+</tr>
+<tr>
+<td>$status</td>
+<td>HTTP请求状态</td>
+<td>200</td>
+</tr>
+<tr>
+<td>$upstream_status</td>
+<td>upstream状态</td>
+<td>200</td>
+</tr>
+<tr>
+<td>$body_bytes_sent</td>
+<td>发送给客户端文件内容大小</td>
+<td>547</td>
+</tr>
+<tr>
+<td>$http_referer</td>
+<td>跳转来源</td>
+<td>“<a target="_blank" rel="noopener" href="https://cashier.alip/">https://cashier.alip</a>ay.com…&#x2F;”</td>
+</tr>
+<tr>
+<td>$http_user_agent</td>
+<td>用户终端代理</td>
+<td>“Mozilla&#x2F;4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident&#x2F;4.0; SV1; GTB7.0; .NET4.0C;</td>
+</tr>
+<tr>
+<td>$ssl_protocol</td>
+<td>SSL协议版本</td>
+<td>TLSv1</td>
+</tr>
+<tr>
+<td>$ssl_cipher</td>
+<td>交换数据中的算法</td>
+<td>RC4-SHA</td>
+</tr>
+<tr>
+<td>$upstream_addr</td>
+<td>后台upstream的地址，即真正提供服务的主机地址</td>
+<td>10.228.35.247:80</td>
+</tr>
+<tr>
+<td>$request_time</td>
+<td>整个请求的总时间</td>
+<td>0.205</td>
+</tr>
+<tr>
+<td>$upstream_response_time</td>
+<td>请求过程中，upstream响应时间</td>
+<td>0.002</td>
+</tr>
+</tbody></table>
+<h2 id="配置Nginx日志"><a href="#配置Nginx日志" class="headerlink" title="配置Nginx日志"></a>配置Nginx日志</h2><p>修改配置文件</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#开启定义的日志格式main</span></span><br><span class="line">    <span class="attribute">log_format</span>  main  <span class="string">&#x27;<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] &quot;<span class="variable">$request</span>&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> &quot;<span class="variable">$http_referer</span>&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;&quot;<span class="variable">$http_user_agent</span>&quot; &quot;<span class="variable">$http_x_forwarded_for</span>&quot;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  localhost;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#指定日志文件位置与格式</span></span><br><span class="line">        <span class="attribute">access_log</span>  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span>   html;</span><br><span class="line">            <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>指定日志文件存放的位置为：<code>/usr/local/nginx/logs/host.access.log</code></p>
+</blockquote>
+<p>重载 Nginx 服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl reload nginx.service</span><br><span class="line"><span class="comment">#重载之后/usr/local/nginx/logs/目录下会多出一个host.access.log文件</span></span><br></pre></td></tr></table></figure>
+
+<p>访问后查看 Nignx 日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /usr/local/nginx/logs/host.access.log</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.10.2 - - [12/Apr/2021:12:00:01 +0800] &quot;GET / HTTP/1.1&quot; 200 0 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36&quot; &quot;-&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Nginx日志切割"><a href="#Nginx日志切割" class="headerlink" title="Nginx日志切割"></a>Nginx日志切割</h2><p>日志切割脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">LOGFILE=/usr/local/nginx/logs/host.access.log</span><br><span class="line">BAKPATH=/usr/local/nginx/logs/bak</span><br><span class="line"></span><br><span class="line">LOG_BAK=<span class="variable">$BAKPATH</span>/$(<span class="built_in">date</span> +%Y%m%d%H%M).host.access.log</span><br><span class="line">PIDFILE=/usr/local/nginx/logs/nginx.pid</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -d <span class="variable">$BAKPATH</span> ];<span class="keyword">then</span></span><br><span class="line">  <span class="built_in">mkdir</span> <span class="variable">$BAKPATH</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mv</span> <span class="variable">$LOGFILE</span> <span class="variable">$LOG_BAK</span></span><br><span class="line"><span class="built_in">touch</span> <span class="variable">$LOGPATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">kill</span> -USR1 `<span class="built_in">cat</span> <span class="variable">$PIDFILE</span>`</span><br></pre></td></tr></table></figure>
+
+<p>创建日志切割脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF &gt; /usr/local/nginx/logs/nginx_log.sh</span></span><br><span class="line"><span class="string">#!/bin/bash</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">LOGPATH=/usr/local/nginx/logs/host.access.log</span></span><br><span class="line"><span class="string">BAKPATH=/usr/local/nginx/logs/bak</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">LOG_BAK=\$BAKPATH/\$(date +%Y%m%d%H%M).host.access.log</span></span><br><span class="line"><span class="string">PIDFILE=/usr/local/nginx/logs/nginx.pid</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">if [ ! -d \$BAKPATH ];then</span></span><br><span class="line"><span class="string">  mkdir \$BAKPATH</span></span><br><span class="line"><span class="string">fi</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">mv \$LOGPATH \$LOG_BAK</span></span><br><span class="line"><span class="string">touch \$LOGPATH</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">kill -USR1 \`cat \$PIDFILE\`</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>配置定时任务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -l</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0 2 * * * bash /usr/local/nginx/logs/nginx_log.sh</span><br><span class="line"><span class="comment">#每天 2:00 执行任务</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="五、Nginx正则匹配"><a href="#五、Nginx正则匹配" class="headerlink" title="五、Nginx正则匹配"></a>五、Nginx正则匹配</h1><ol>
+<li>以 <code>=</code> 开头，表示精确匹配</li>
+<li>以 <code>^~</code> 开头，表示uri以某个常规字符串开头，理解为匹配 URL 路径即可</li>
+<li><code>~</code> 开头，表示<code>区分大小写</code>的正则匹配</li>
+<li><code>~*</code> 开头，表示<code>不区分大小写</code>的正则匹配</li>
+<li><code>!~</code> 和<code>!~*</code> 分别为<code>区分大小写不匹配</code>及<code>不区分大小写不匹配</code> 的正则</li>
+<li><code>/</code> 通用匹配，任何请求都会匹配到。</li>
+</ol>
+<h1 id="六、Rewrite-重写"><a href="#六、Rewrite-重写" class="headerlink" title="六、Rewrite 重写"></a>六、Rewrite 重写</h1><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> domain.com;</span><br><span class="line">    <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> https://<span class="variable">$&#123;server_name&#125;</span><span class="variable">$1</span> <span class="literal">permanent</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="七、Nginx开启压缩"><a href="#七、Nginx开启压缩" class="headerlink" title="七、Nginx开启压缩"></a>七、Nginx开启压缩</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">语法: gzip on | off;</span><br><span class="line">默认: gzip off;</span><br><span class="line">语境: http,server,location,if in location</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">gzip</span> <span class="literal">on</span>;    <span class="comment">#开启压缩</span></span><br><span class="line"><span class="attribute">gzip_min_length</span> <span class="number">1000</span>;</span><br><span class="line"><span class="attribute">gzip_proxied</span> expired <span class="literal">no</span>-cache <span class="literal">no</span>-store private auth;</span><br><span class="line"><span class="attribute">gzip_types</span> text/plain application/xml;</span><br><span class="line"><span class="attribute">gzip_buffers</span> <span class="number">32</span> <span class="number">4k</span> | <span class="number">16</span> <span class="number">8k</span>;    <span class="comment">#数据分块</span></span><br></pre></td></tr></table></figure>
+
+<p>数据分块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">语法: gzip_buffers number size;</span><br><span class="line">默认: gzip_buffers 32 4k | 16 8k;</span><br><span class="line">语境: http,server,location</span><br></pre></td></tr></table></figure>
+
+<p>压缩级别</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">语法: gzip_comp_level level;</span><br><span class="line">默认: gzip_comp_level 1;</span><br><span class="line">语境: http,server,location</span><br></pre></td></tr></table></figure>
+
+<p>level 默认为 “1”，取值在 1 to 9</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>默认</th>
+<th>语境</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gzip on|off;</td>
+<td>off</td>
+<td>http，server，location</td>
+<td>开启压缩</td>
+</tr>
+<tr>
+<td>gzip_buffers 32 4k|16 8k;</td>
+<td>32 4k|16 8k</td>
+<td>http，server，location</td>
+<td>数据分块</td>
+</tr>
+<tr>
+<td>gzip_comp_level [level];</td>
+<td>1</td>
+<td>http，server，location</td>
+<td>压缩级别，取值在 1 to 9</td>
+</tr>
+</tbody></table>
+<h1 id="八、Nginx-开启缓存"><a href="#八、Nginx-开启缓存" class="headerlink" title="八、Nginx 开启缓存"></a>八、Nginx 开启缓存</h1><p>为后缀为<code>gif,jpg,jpeg,png,bmp,swf,js,css</code>的文件开启缓存</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|jpeg|png|bmp|swf|js|css)$</span> &#123;</span><br><span class="line">  <span class="comment">#设置缓存上面定义的后缀文件缓存到浏览器的生存时间</span></span><br><span class="line">  <span class="attribute">expires</span>   <span class="number">3d</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">location</span> <span class="regexp">~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</span> &#123;</span><br><span class="line"> <span class="comment">#禁止缓存，每次都从服务器请求</span></span><br><span class="line">  <span class="attribute">add_header</span> Cache-Control <span class="literal">no</span>-store;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="九、反向代理"><a href="#九、反向代理" class="headerlink" title="九、反向代理"></a>九、反向代理</h1><p>proxy_pass 模块：<a target="_blank" rel="noopener" href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass">http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">语法: proxy_pass URL;</span><br><span class="line">默认: -</span><br><span class="line">语境: location,if inlcation,limit_except</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://localhost:8000/url/;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="十、负载均衡"><a href="#十、负载均衡" class="headerlink" title="十、负载均衡"></a>十、负载均衡</h1><p>upstream 模块：<a target="_blank" rel="noopener" href="http://nginx.org/en/docs/http/ngx_http_upstream_module.html">http://nginx.org/en/docs/http/ngx_http_upstream_module.html</a></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://backend/;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">upstream</span> backend &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.10.20:80</span> weight=<span class="number">1</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.10.30:80</span> weight=<span class="number">1</span> max_fails=<span class="number">3</span> fail_timeout=<span class="number">10s</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.10.40:80</span> down;</span><br><span class="line">    <span class="comment">#server unix:/tmp/backend3;</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.10.50:80</span> backup;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.10.60:80</span> backup;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>server Host:Port：后端服务器的IP和端口列表配置</li>
+<li>weight：权重轮询调度</li>
+<li>down：该主机暂停服务  </li>
+<li>max_fails：失败最大次数，超过失败最大次数暂停服务</li>
+<li>fail_timeout：如果请求受理失败，暂停指定的时间之后重新发起请求</li>
+<li>backup：备份服务器，当后端服务器全部Down后提供服务</li>
+</ul>
+<h1 id="十一、目录索引"><a href="#十一、目录索引" class="headerlink" title="十一、目录索引"></a>十一、目录索引</h1><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">root</span>   /usr/local/nginx/index;</span><br><span class="line">        <span class="attribute">autoindex</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">charset</span> utf-<span class="number">8</span>,gbk;</span><br><span class="line">        <span class="attribute">autoindex_exact_size</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">autoindex_format</span> html;</span><br><span class="line">        <span class="attribute">autoindex_localtime</span> <span class="literal">off</span>;</span><br><span class="line">        <span class="comment">#auth_basic &quot;Please input password&quot;;</span></span><br><span class="line">        <span class="comment">#auth_basic_user_file /usr/local/nginx/passwd;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">语法</th>
+<th align="left">默认</th>
+<th align="left">语境</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>autoindex on | off;</strong></td>
+<td align="left">off</td>
+<td align="left">http，server，location</td>
+<td align="left">开启或关闭目录索引</td>
+</tr>
+<tr>
+<td align="left"><strong>autoindex_exact_size on | off;</strong></td>
+<td align="left">on</td>
+<td align="left">http，server，location</td>
+<td align="left">启用或禁用目录列表输出</td>
+</tr>
+<tr>
+<td align="left"><strong>autoindex_localtime on| off;</strong></td>
+<td align="left">off</td>
+<td align="left">http，server，location</td>
+<td align="left">是否应在本地输出目录列表中的时间</td>
+</tr>
+<tr>
+<td align="left"><strong>autoindex_format html | xml | json | jsonp;</strong></td>
+<td align="left">html</td>
+<td align="left">http，server，location</td>
+<td align="left">设置目录列表的格式</td>
+</tr>
+</tbody></table>
+<h1 id="十二、禁止-IP-访问"><a href="#十二、禁止-IP-访问" class="headerlink" title="十二、禁止 IP 访问"></a>十二、禁止 IP 访问</h1><p>禁止用户使用服务器 IP 访问服务</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123; </span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span> default_server; </span><br><span class="line">    <span class="attribute">server_name</span> _; </span><br><span class="line">    <span class="attribute">return</span> <span class="number">444</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="十三、开启防盗链"><a href="#十三、开启防盗链" class="headerlink" title="十三、开启防盗链"></a>十三、开启防盗链</h1><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> <span class="regexp">~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$</span> &#123;</span><br><span class="line"><span class="attribute">expires</span> <span class="number">30d</span>; <span class="attribute">access_log</span> <span class="literal">off</span>;</span><br><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.baidu.com</span> <span class="regexp">*.google.com</span> <span class="regexp">*.iosx.top</span> server_names ~\.google\. ~\.baidu\.;</span><br><span class="line"><span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line"><span class="comment">#return 403;</span></span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/</span> https://www.iosx.top/image/dtg.jpg;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</div><div class="article-licensing box"><div class="licensing-title"><p>Nginx 常用功能</p><p><a href="https://www.lihaicheng.com/page/Nginx常用功能/">https://www.lihaicheng.com/page/Nginx常用功能/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>白羊</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2020-07-01</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-06-20</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Nginx/">Nginx</a></div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="https://afdian.net/a/lihaicheng" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/img/alipay.jpg" alt="支付宝"></span></a><a class="button donate" href="https://www.buymeacoffee.com/lihaicheng" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a><a class="button donate" href="https://www.patreon.com/lihaicheng" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechat.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/page/Nginx%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Nginx 正则匹配</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/page/CentOS%E5%AE%89%E8%A3%85Nginx/"><span class="level-item">CentOS 安装 Nginx</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="白羊"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">白羊</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">11</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/lihaicheng-cn" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com/lihaicheng_cn"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://logi.im" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">LOGI</span></span><span class="level-right"><span class="level-item tag">logi.im</span></span></a></li><li><a class="level is-mobile" href="http://www.xiaoxuya.top" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">XI溪</span></span><span class="level-right"><span class="level-item tag">www.xiaoxuya.top</span></span></a></li><li><a class="level is-mobile" href="https://www.zsythink.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">朱双印</span></span><span class="level-right"><span class="level-item tag">www.zsythink.net</span></span></a></li><li><a class="level is-mobile" href="https://www.gaoyufu.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">简中仙</span></span><span class="level-right"><span class="level-item tag">www.gaoyufu.cn</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/11/"><span class="level-start"><span class="level-item">十一月 2023</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/10/"><span class="level-start"><span class="level-item">十月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Docker/"><span class="level-start"><span class="level-item">Docker</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Kubernetes/"><span class="level-start"><span class="level-item">Kubernetes</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Nginx/"><span class="level-start"><span class="level-item">Nginx</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/"><span class="level-start"><span class="level-item">负载均衡</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-11-28T06:38:21.000Z">2023-11-28</time></p><p class="title"><a href="/page/reg/">通过 registry:2 加速国外镜像源</a></p><p class="categories"><a href="/categories/Docker/">Docker</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-10-30T02:52:06.000Z">2022-10-30</time></p><p class="title"><a href="/page/k8s-install/">安装 Kubernetes 1.25.2 单管理节点</a></p><p class="categories"><a href="/categories/Kubernetes/">Kubernetes</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T03:23:43.000Z">2022-05-07</time></p><p class="title"><a href="/page/Windows%E4%BF%AE%E6%94%B9%E8%BF%9C%E7%A8%8B%E7%AB%AF%E5%8F%A3/">Windows修改远程桌面端口</a></p><p class="categories"><a href="/categories/Windows/">Windows</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-12-07T07:07:05.000Z">2021-12-07</time></p><p class="title"><a href="/page/Linux%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9/">Linux 磁盘扩容</a></p><p class="categories"><a href="/categories/Linux/">Linux</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-12-06T01:52:36.000Z">2021-12-06</time></p><p class="title"><a href="/page/Linux%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/">Linux 磁盘管理</a></p><p class="categories"><a href="/categories/Linux/">Linux</a></p></div></article></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/K8S/"><span class="tag">K8S</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Keepalived/"><span class="tag">Keepalived</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LVS/"><span class="tag">LVS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Nginx/"><span class="tag">Nginx</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Registry/"><span class="tag">Registry</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shell/"><span class="tag">Shell</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%81%E4%B9%A6/"><span class="tag">证书</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/avatar.png" alt="白羊" height="28"></a><p class="is-size-7"><span>&copy; 2024 白羊</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

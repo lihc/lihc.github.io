@@ -1,0 +1,10 @@
+# robots.txt
+User-agent: *
+#Allow: /page/
+Disallow: /
+Disallow: /archives/
+Disallow: /categories/
+Disallow: /images/
+Disallow: /links/
+Disallow: /tags/
+Sitemap: /sitemap.xml
