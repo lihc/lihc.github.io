@@ -11,11 +11,21 @@ DOMAIN-SUFFIX,justmysocks.net
 # OneDrive
 DOMAIN-SUFFIX,onedrive.live.com
 
+# OpenVPN
+DOMAIN-SUFFIX,openvpn.net
+DOMAIN-SUFFIX,player.vimeo.com
+
+# Potplayer
+DOMAIN-SUFFIX,potplayer.daum.net
+
 # Npmjs
 DOMAIN-SUFFIX,registry.npmjs.org
 
 # SMS-Activate
 DOMAIN-SUFFIX,smsactivate.s3.eu-central-1.amazonaws.com
+
+# Typora
+DOMAIN-SUFFIX,typora.io
 
 # V2RAY
 DOMAIN-SUFFIX,v2fly.org
