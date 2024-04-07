@@ -1,0 +1,6 @@
+# ruleset=💬 Open AI,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/ClaudeAI.list
+
+# 内容：Claude
+# 数量：2条
+DOMAIN-SUFFIX,anthropic.com
+DOMAIN-SUFFIX,claude.ai

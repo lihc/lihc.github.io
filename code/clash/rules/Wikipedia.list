@@ -1,3 +1,5 @@
+# ruleset=🔰 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Wikipedia.list
+
 # 内容：Wikipedia 维基相关域名
 # 数量：12条
 DOMAIN-SUFFIX,mediawiki.org
