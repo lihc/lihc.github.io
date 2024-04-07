@@ -5,6 +5,9 @@ DOMAIN,mirrors.cloud.aliyuncs.com
 # Close AI
 DOMAIN-SUFFIX,closeai-asia.com
 
+# Gravatar
+DOMAIN-SUFFIX,gravatar.com
+
 # Just My Socks
 DOMAIN-SUFFIX,justmysocks.net
 
