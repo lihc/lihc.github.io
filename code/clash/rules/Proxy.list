@@ -36,6 +36,9 @@ DOMAIN-SUFFIX,typora.io
 # V2RAY
 DOMAIN-SUFFIX,v2fly.org
 
+# XZ
+DOMAIN-SUFFIX,tukaani.org
+
 # Z-library
 DOMAIN-SUFFIX,zh.z-library.se
 
