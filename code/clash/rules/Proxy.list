@@ -42,6 +42,17 @@ DOMAIN-SUFFIX,tukaani.org
 # Z-library
 DOMAIN-SUFFIX,zh.z-library.se
 
+# GoDaddy
+DOMAIN-SUFFIX,godaddy.com
+
+# POE
+DOMAIN-SUFFIX,poe.com
+
+# 货币
+DOMAIN-SUFFIX,binance.com
+DOMAIN-SUFFIX,huobi.com
+DOMAIN-SUFFIX,paxful.com
+
 # 国外域名
 DOMAIN-SUFFIX,eu
 DOMAIN-SUFFIX,hk
