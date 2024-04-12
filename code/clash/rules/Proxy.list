@@ -8,6 +8,9 @@ DOMAIN-SUFFIX,closeai-asia.com
 # Docker
 DOMAIN-SUFFIX,docker.com
 
+# GoDaddy
+DOMAIN-SUFFIX,godaddy.com
+
 # Gravatar
 DOMAIN-SUFFIX,gravatar.com
 
@@ -20,6 +23,9 @@ DOMAIN-SUFFIX,onedrive.live.com
 # OpenVPN
 DOMAIN-SUFFIX,openvpn.net
 DOMAIN-SUFFIX,player.vimeo.com
+
+# POE
+DOMAIN-SUFFIX,poe.com
 
 # Potplayer
 DOMAIN-SUFFIX,potplayer.daum.net
@@ -42,15 +48,11 @@ DOMAIN-SUFFIX,tukaani.org
 # Z-library
 DOMAIN-SUFFIX,zh.z-library.se
 
-# GoDaddy
-DOMAIN-SUFFIX,godaddy.com
-
-# POE
-DOMAIN-SUFFIX,poe.com
-
 # 货币
 DOMAIN-SUFFIX,binance.com
+DOMAIN-SUFFIX,bnbstatic.com
 DOMAIN-SUFFIX,huobi.com
+DOMAIN-SUFFIX,htx.com
 DOMAIN-SUFFIX,paxful.com
 
 # 国外域名
