@@ -22,3 +22,6 @@ DOMAIN-SUFFIX,stripe.com
 DOMAIN-SUFFIX,browser-intake-datadoghq.com
 DOMAIN-SUFFIX,chatgpt.com
 DOMAIN-SUFFIX,intercom.com
+
+# POE
+DOMAIN-SUFFIX,poe.com
