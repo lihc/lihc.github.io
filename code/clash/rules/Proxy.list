@@ -42,6 +42,9 @@ DOMAIN-SUFFIX,typora.io
 # V2RAY
 DOMAIN-SUFFIX,v2fly.org
 
+# WireGuard
+DOMAIN-SUFFIX,wireguard.com
+
 # XZ
 DOMAIN-SUFFIX,tukaani.org
 
