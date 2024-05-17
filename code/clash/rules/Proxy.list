@@ -17,6 +17,9 @@ DOMAIN-SUFFIX,gravatar.com
 # Just My Socks
 DOMAIN-SUFFIX,justmysocks.net
 
+# NexusMods
+DOMAIN-SUFFIX,cf-files.nexusmods.com
+
 # OneDrive
 DOMAIN-SUFFIX,onedrive.live.com
 
