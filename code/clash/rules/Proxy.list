@@ -5,8 +5,24 @@ DOMAIN,mirrors.cloud.aliyuncs.com
 # Close AI
 DOMAIN-SUFFIX,closeai-asia.com
 
+# CDN
+DOMAIN-SUFFIX,akamaihd.net
+
+# DEV ==========================
 # Docker
 DOMAIN-SUFFIX,docker.com
+
+# Python
+DOMAIN-SUFFIX,python.org
+# ==============================
+
+# Games ========================
+DOMAIN-SUFFIX,ubi.com
+DOMAIN-SUFFIX,epicgamescdn.com
+
+# NexusMods
+DOMAIN-SUFFIX,cf-files.nexusmods.com
+# ==============================
 
 # GoDaddy
 DOMAIN-SUFFIX,godaddy.com
@@ -16,9 +32,6 @@ DOMAIN-SUFFIX,gravatar.com
 
 # Just My Socks
 DOMAIN-SUFFIX,justmysocks.net
-
-# NexusMods
-DOMAIN-SUFFIX,cf-files.nexusmods.com
 
 # OneDrive
 DOMAIN-SUFFIX,onedrive.live.com
@@ -38,6 +51,9 @@ DOMAIN-SUFFIX,registry.npmjs.org
 
 # SMS-Activate
 DOMAIN-SUFFIX,smsactivate.s3.eu-central-1.amazonaws.com
+
+# Sunshine
+DOMAIN-SUFFIX,lizardbyte.dev
 
 # Typora
 DOMAIN-SUFFIX,typora.io
