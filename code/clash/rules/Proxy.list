@@ -58,6 +58,9 @@ DOMAIN-SUFFIX,lizardbyte.dev
 # Typora
 DOMAIN-SUFFIX,typora.io
 
+# Tailscale
+DOMAIN-SUFFIX,tailscale.com
+
 # V2RAY
 DOMAIN-SUFFIX,v2fly.org
 
