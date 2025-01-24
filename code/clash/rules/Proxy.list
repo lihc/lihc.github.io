@@ -1,0 +1,90 @@
+
+# 阿里云
+DOMAIN,mirrors.cloud.aliyuncs.com
+
+# Close AI
+DOMAIN-SUFFIX,closeai-asia.com
+
+# CDN
+DOMAIN-SUFFIX,akamaihd.net
+
+# DEV ==========================
+# Docker
+DOMAIN-SUFFIX,docker.com
+
+# Python
+DOMAIN-SUFFIX,python.org
+# ==============================
+
+# Games ========================
+DOMAIN-SUFFIX,ubi.com
+DOMAIN-SUFFIX,epicgamescdn.com
+
+# NexusMods
+DOMAIN-SUFFIX,cf-files.nexusmods.com
+# ==============================
+
+# GoDaddy
+DOMAIN-SUFFIX,godaddy.com
+
+# Gravatar
+DOMAIN-SUFFIX,gravatar.com
+
+# Just My Socks
+DOMAIN-SUFFIX,justmysocks.net
+
+# OneDrive
+DOMAIN-SUFFIX,onedrive.live.com
+
+# OpenVPN
+DOMAIN-SUFFIX,openvpn.net
+DOMAIN-SUFFIX,player.vimeo.com
+
+# POE
+DOMAIN-SUFFIX,poe.com
+
+# Potplayer
+DOMAIN-SUFFIX,potplayer.daum.net
+
+# Npmjs
+DOMAIN-SUFFIX,registry.npmjs.org
+
+# SMS-Activate
+DOMAIN-SUFFIX,smsactivate.s3.eu-central-1.amazonaws.com
+
+# Sunshine
+DOMAIN-SUFFIX,lizardbyte.dev
+
+# Typora
+DOMAIN-SUFFIX,typora.io
+
+# Tailscale
+DOMAIN-SUFFIX,tailscale.com
+
+# V2RAY
+DOMAIN-SUFFIX,v2fly.org
+
+# WireGuard
+DOMAIN-SUFFIX,wireguard.com
+
+# XZ
+DOMAIN-SUFFIX,tukaani.org
+
+# Z-library
+DOMAIN-SUFFIX,zh.z-library.se
+
+# 货币
+DOMAIN-SUFFIX,binance.com
+DOMAIN-SUFFIX,bnbstatic.com
+DOMAIN-SUFFIX,huobi.com
+DOMAIN-SUFFIX,htx.com
+DOMAIN-SUFFIX,paxful.com
+
+# 国外域名
+DOMAIN-SUFFIX,eu
+DOMAIN-SUFFIX,hk
+DOMAIN-SUFFIX,jp
+DOMAIN-SUFFIX,kr
+DOMAIN-SUFFIX,sg
+DOMAIN-SUFFIX,tw
+DOMAIN-SUFFIX,uk

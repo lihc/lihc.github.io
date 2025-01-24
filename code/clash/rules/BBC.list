@@ -1,0 +1,37 @@
+# ruleset=🌍 国外媒体,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BBC.list
+
+# 内容：BBC
+# 数量：3条
+DOMAIN-KEYWORD,uk-live
+DOMAIN-SUFFIX,bbc.co
+DOMAIN-SUFFIX,bbc.com
+
+# ruleset=🌍 国外媒体,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BBCiPlayer.list
+
+# 内容：BBCiPlayer
+# 数量：15条
+USER-AGENT,BBCiPlayer*
+DOMAIN-KEYWORD,bbcfmt
+DOMAIN-KEYWORD,uk-live
+DOMAIN,aod-dash-uk-live.akamaized.net
+DOMAIN,aod-hls-uk-live.akamaized.net
+DOMAIN,vod-dash-uk-live.akamaized.net
+DOMAIN,vod-thumb-uk-live.akamaized.net
+DOMAIN-SUFFIX,bbc.co
+DOMAIN-SUFFIX,bbc.co.uk
+DOMAIN-SUFFIX,bbc.com
+DOMAIN-SUFFIX,bbc.net.uk
+DOMAIN-SUFFIX,bbcfmt.hs.llnwd.net
+DOMAIN-SUFFIX,bbci.co
+DOMAIN-SUFFIX,bbci.co.uk
+DOMAIN-SUFFIX,bidi.net.uk
+
+# 补充
+DOMAIN-SUFFIX,adsafeprotected.com
+DOMAIN-SUFFIX,bbc.gscontxt.net
+DOMAIN-SUFFIX,cdn.privacy-mgmt.com
+DOMAIN-SUFFIX,edigitalsurvey.com
+DOMAIN-SUFFIX,permutive.com
+DOMAIN-SUFFIX,secure-us.imrworldwide.com
+DOMAIN-SUFFIX,the-ozone-project.com
+DOMAIN-SUFFIX,ws.bbc-reporting-api.app

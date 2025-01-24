@@ -1,0 +1,26 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap'); */
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('/fonts/Ubuntu.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('/fonts/SourceCodePro.woff2') format('woff2');
+}
+
+body {
+    background-color: #f7f7f5;
+    font-family: Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+ion-icon {
+    color: #4c4c4c;
+    font-size: 1.125rem;
+    font-size: calc(1rem + 2px);
+}

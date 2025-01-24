@@ -1,0 +1,40 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+header nav.menus {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 100%; /* 750px; */
+    }
+    header nav.menus {
+        display: block;
+    }
+    header .site-title,
+    header .media-menus {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .container {
+        max-width: 100%; /* 970px; */
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .container {
+        max-width: 1170px;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+}

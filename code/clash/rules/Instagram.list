@@ -1,0 +1,8 @@
+# ruleset=🔰 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Instagram.list
+
+# 内容：Instagram
+# 数量：4条
+DOMAIN-KEYWORD,instagram
+DOMAIN-SUFFIX,cdninstagram.com
+DOMAIN-SUFFIX,instagr.am
+DOMAIN-SUFFIX,instagram.com

@@ -1,0 +1,76 @@
+/* 分页器 paginator */
+.paginator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    margin: 0.5rem 0;
+    padding: 0 0.5rem;
+    position: relative
+}
+
+.paginator .extend,
+.paginator .page-number {
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    color: #363636;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05), 0 0 1px rgba(0,0,0,0.1);
+}
+
+.paginator .current,
+.paginator .extend:hover,
+.paginator .page-number:hover {
+    background: #3475dc;
+    color: #fff;
+}
+
+.paginator .page-number {
+    width: 0.75rem;
+    display: flex;
+    justify-content: center;
+}
+
+.paginator .space {
+    color: #b5b5b5;
+}
+
+.paginator .next {
+    right: 0.5rem;
+    text-align: center;
+}
+
+.paginator .prev {
+    left: 0.5rem;
+    text-align: center;
+}
+
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+    .paginator .space,
+    .paginator .page-number {
+        display: none;
+    }
+    .paginator {
+        justify-content: space-between;
+    }
+    .paginator .next,
+    .paginator .prev {
+        position: static;
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 769px), (orientation: landscape) {
+    .paginator .space,
+    .paginator .page-number {
+        display: flex;
+    }
+    .paginator {
+        justify-content: center;
+    }
+    .paginator .next,
+    .paginator .prev {
+        position: absolute;
+    }
+}
