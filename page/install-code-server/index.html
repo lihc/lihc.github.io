@@ -60,87 +60,76 @@
             <div class="content" style="flex: 1;">
                 <article class="article card post">
                     <div class="metadata">
-                        <span><time dateTime="2024-12-31T16:00:00.000Z">2025-01-01</time>发表</span>
-                        <span>1 分钟读完 (大约123个字)</span>
+                        <span><time dateTime="2025-02-05T03:11:55.000Z">2025-02-05</time>发表</span>
+                        <span>2 分钟读完 (大约325个字)</span>
                     </div>
-                    <h1 class="post-title">Hello World</h1>
+                    <h1 class="post-title">使用 code-server 在任何地方运行 VSCode</h1>
                     <div class="markdown-body">
-                        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-                        <h2 id="Quick-Start">
-                            <a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start
+                        <p>官方网站：<a target="_blank" rel="noopener" href="https://coder.com/docs/code-server">https://coder.com/docs/code-server</a>
+                        </p>
+                        <p>仓库地址：<a target="_blank" rel="noopener" href="https://github.com/coder/code-server">https://github.com/coder/code-server</a>
+                        </p>
+                        <h2 id="1-code-server-的亮点">
+                            <a href="#1-code-server-的亮点" class="headerlink" title="1. code-server 的亮点"></a>1. code-server 的亮点
                         </h2>
-                        <h3 id="Create-a-new-post">
-                            <a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post
-                        </h3>
-                        <figure class="highlight bash">
+                        <ul>
+                            <li>在任何设备上使用一致的开发环境进行编码</li>
+                            <li>使用云服务器加速测试、编译、下载等</li>
+                            <li>在您外出时节省电池寿命；所有密集型任务都在您的服务器上运行</li>
+                        </ul>
+                        <h2 id="2-code-server-安装要求">
+                            <a href="#2-code-server-安装要求" class="headerlink" title="2. code-server 安装要求"></a>2. code-server 安装要求
+                        </h2>
+                        <p>需要一台可以运行代码服务器的机器。可以使用已有的物理机器，也可以使用云虚拟机。</p>
+                        <p>机器规格至少建议：</p>
+                        <ul>
+                            <li>1 GB 内存</li>
+                            <li>2 个 CPU 核心</li>
+                        </ul>
+                        <p>机器环境必须启用 WebSockets，因为 code-server 使用 WebSockets 进行浏览器和服务器之间的通信。</p>
+                        <p>**TL;DR：**启用 WebSockets 的 Linux 机器，1 GB RAM 和 2 个 vCPU</p>
+                        <h2 id="3-code-server-安装入门">
+                            <a href="#3-code-server-安装入门" class="headerlink" title="3. code-server 安装入门"></a>3. code-server 安装入门
+                        </h2>
+                        <p>使用安装脚本，预览安装过程中发生的情况：</p>
+                        <figure class="highlight sh">
                             <table>
                                 <tr>
                                     <td class="gutter">
                                         <pre><span class="line">1</span><br></pre>
                                     </td>
                                     <td class="code">
-                                        <pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre>
+                                        <pre><span class="line">curl -fsSL https://code-server.dev/install.sh | sh -s -- --dry-run</span><br></pre>
                                     </td>
                                 </tr>
                             </table>
                         </figure>
 
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a>
-                        </p>
-                        <h3 id="Run-server">
-                            <a href="#Run-server" class="headerlink" title="Run server"></a>Run server
-                        </h3>
-                        <figure class="highlight bash">
+                        <p>要安装，请运行：</p>
+                        <figure class="highlight sh">
                             <table>
                                 <tr>
                                     <td class="gutter">
                                         <pre><span class="line">1</span><br></pre>
                                     </td>
                                     <td class="code">
-                                        <pre><span class="line">$ hexo server</span><br></pre>
+                                        <pre><span class="line">curl -fsSL https://code-server.dev/install.sh | sh</span><br></pre>
                                     </td>
                                 </tr>
                             </table>
                         </figure>
 
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a>
+                        <p>完成后，安装脚本将打印出运行和启动代码服务器的说明。</p>
+                        <hr>
+                        <p>更多安装方法可参考官方文档：<a target="_blank" rel="noopener" href="https://coder.com/docs/code-server#getting-started">https://coder.com/docs/code-server#getting-started</a>
                         </p>
-                        <h3 id="Generate-static-files">
-                            <a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files
-                        </h3>
-                        <figure class="highlight bash">
-                            <table>
-                                <tr>
-                                    <td class="gutter">
-                                        <pre><span class="line">1</span><br></pre>
-                                    </td>
-                                    <td class="code">
-                                        <pre><span class="line">$ hexo generate</span><br></pre>
-                                    </td>
-                                </tr>
-                            </table>
-                        </figure>
-
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a>
-                        </p>
-                        <h3 id="Deploy-to-remote-sites">
-                            <a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites
-                        </h3>
-                        <figure class="highlight bash">
-                            <table>
-                                <tr>
-                                    <td class="gutter">
-                                        <pre><span class="line">1</span><br></pre>
-                                    </td>
-                                    <td class="code">
-                                        <pre><span class="line">$ hexo deploy</span><br></pre>
-                                    </td>
-                                </tr>
-                            </table>
-                        </figure>
-
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a>
-                        </p>
+                        <h2 id="4-code-server-设置优化">
+                            <a href="#4-code-server-设置优化" class="headerlink" title="4. code-server 设置优化"></a>4. code-server 设置优化
+                        </h2>
+                        <p>公开代码服务器</p>
+                        <h2 id="5-推荐的-VSCode-插件">
+                            <a href="#5-推荐的-VSCode-插件" class="headerlink" title="5. 推荐的 VSCode 插件"></a>5. 推荐的 VSCode 插件
+                        </h2>
                     </div>
                 </article>
             </div>
