@@ -6,7 +6,7 @@ main .article-list {
 }
 
 main .article.card {
-    padding: 1.3125rem;
+    padding: 1.3125rem 2rem;
     margin: 0.5rem;
     background-color: #fff;
     border-radius: 0.25rem;
@@ -69,4 +69,75 @@ main .article .read-more {
 
 main .article .read-more:hover {
     background-color: #eeeeee;
+}
+
+main .article .licensing {
+    position: relative;
+    z-index: 1;
+    box-shadow: none;
+    background: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+}
+main .article .licensing:after{
+    position: absolute;
+    z-index: -1;
+    right: -50px;
+    top: -37.87px;
+    content: '\f25e';
+    font-size: 200px;
+    font-family: 'Font Awesome 5 Brands';
+    opacity: 0.1;
+}
+
+main .article .licensing-title {
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+main .article .licensing-title > *:first-child {
+    color: #4a4a4a;
+    font-size: 0.875rem;
+    margin: 0 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+main .article .licensing-title > *:last-child {
+    color: #7a7a7a !important;
+    font-size: 0.85rem !important;
+    text-decoration: none;
+}
+
+main .article .licensing-meta {
+    display: flex;
+}
+
+main .article .licensing-meta div {
+    margin-right: 1rem;
+}
+
+main .article .licensing-meta h6,
+main .article .licensing-meta p {
+    font-size: 0.85rem !important;
+    font-weight: normal;
+    margin: 0 0 0.5rem;
+    color: #4a4a4a;
+    line-height: 1.2;
+}
+
+main .article .licensing-meta p {
+    margin: 0;
+}
+
+main .article .licensing-meta a {
+    text-decoration: none;
+    
+}
+
+main .article .licensing-meta img {
+    height: 1rem;
+    width: 1rem;
+    color: #4a4a4a;
 }
