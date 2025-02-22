@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hexo">
+    <title>Hexo</title>
+    <link rel="shortcut icon" href="/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/article.css">
+    <link rel="stylesheet" href="/css/paginator.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/markdown-body.css">
+    <link rel="stylesheet" href="/css/medis.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="/js/show-menus.js"></script>
+    <script src="/js/moment-with-locales.js"></script>
+    <script src="/js/time-ago.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="nvabar-container container">
+            <h1 class="title">
+                <a class="logo" href="/">
+                    <img src="/images/favicon.svg">
+                </a>
+                <a class="site-title" href="/">一条理想鱼</a>
+            </h1>
+            <nav class="menus" id="navbar">
+                <div class="nav-head">
+                    <h2>MENU</h2>
+                    <a href="#"><ion-icon name="close"></ion-icon></a>
+                </div>
+                <div class="navbar">
+                    <a class="menu " href="/">首页</a>
+                    <a class="menu " href="/archives">归档</a>
+                    <a class="menu " href="/categories">分类</a>
+                    <a class="menu " href="/tags">标签</a>
+                    <a class="menu " href="/links">链接</a>
+                    <a class="menu " href="/about">关于</a>
+                </div>
+                <div class="nva-foot"></div>
+            </nav>
+            <div class="quickly">
+                <a class="item github" target="_blank" href="https://github.com/lihaicheng-cn"><ion-icon name="logo-github"></ion-icon></a>
+                <a class="item search" href="#"><ion-icon name="search"></ion-icon></a>
+                <a class="item media-menus" id="show-menus"><ion-icon name="menu"></ion-icon></a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container main-content">
+            <div class="content" style="flex: 1;">
+                <article class="article card post">
+                    <div class="metadata">
+                        <span><time dateTime="2023-11-28T04:06:25.000Z">2023-11-28</time>发表</span>
+                        <span>6 分钟读完 (大约970个字)</span>
+                    </div>
+                    <h1 class="post-title">通过 registry:2 加速国外镜像源</h1>
+                    <div class="markdown-body">
+                        <p>registry 镜像仓库：<a target="_blank" rel="noopener" href="https://hub.docker.com/_/registry">https://hub.docker.com/_/registry</a>
+                        </p>
+                        <p>distribution 官网：<a target="_blank" rel="noopener" href="https://distribution.github.io/distribution/">https://distribution.github.io/distribution/</a>
+                        </p>
+                        <p>因为一些原因，在国内访问 <code>registry.k8s.io</code>、<code>quay.io</code> 等镜像源非常困难，所以当有一台中国大陆以外的服务器时，可以利用 registry 注册表作为拉取缓存。</p>
+                        <blockquote>
+                            <p>官网文档：<a target="_blank" rel="noopener" href="https://distribution.github.io/distribution/recipes/mirror/">https://distribution.github.io/distribution/recipes/mirror/</a>
+                            </p>
+                            <h3 id="Solution">
+                                <a href="#Solution" class="headerlink" title="Solution"></a>Solution
+                            </h3>
+                            <p>The Registry can be configured as a pull through cache. In this mode a Registry responds to all normal docker pull requests but stores all content locally.</p>
+                        </blockquote>
+                        <h2 id="一、环境准备">
+                            <a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备
+                        </h2>
+                        <p>开始之前需要准备的一些必需品</p>
+                        <ul>
+                            <li>
+                                <input checked="" disabled="" type="checkbox"> 一台可以公网访问的服务器（服务器需要具备访问 registry.k8s.io 的能力）
+                            </li>
+                            <li>
+                                <input checked="" disabled="" type="checkbox"> （可选）一个可以访问的二级域名
+                            </li>
+                        </ul>
+                        <h2 id="二、搭建服务">
+                            <a href="#二、搭建服务" class="headerlink" title="二、搭建服务"></a>二、搭建服务
+                        </h2>
+                        <h3 id="1-功能实现">
+                            <a href="#1-功能实现" class="headerlink" title="1. 功能实现"></a>1. 功能实现
+                        </h3>
+                        <p>首先利用 docker 进行基本功能实现，后续优化。</p>
+                        <h4 id="a-拉取-registry-镜像">
+                            <a href="#a-拉取-registry-镜像" class="headerlink" title="a. 拉取 registry 镜像"></a>a. 拉取 registry 镜像
+                        </h4>
+                        <p>使用 <code>docker pull</code> 拉取 registry:2 镜像</p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line">docker pull registry:2</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+
+
+                        <h4 id="b-创建-registry-容器">
+                            <a href="#b-创建-registry-容器" class="headerlink" title="b. 创建 registry 容器"></a>b. 创建 registry 容器
+                        </h4>
+                        <p>使用 <code>docker run</code> 创建容器，映射 5000 端口，名称为 registry，使用镜像 registry:2</p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line">docker run -d -p 5000:5000 --name registry registry:2 -e REGISTRY_PROXY_REMOTEURL=<span class="string">&quot;https://registry.k8s.io&quot;</span></span><br><span class="line"><span class="comment"># 通过 -e 参数设置变量 REGISTRY_PROXY_REMOTEURL，将 registry.k8s.io 作为缓存服务的上游</span></span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>还可以通过设置配置文件实现：</p>
+                        <figure class="highlight yaml">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line"><span class="attr">proxy:</span></span><br><span class="line">  <span class="attr">remoteurl:</span> <span class="string">https://registry-1.docker.io</span></span><br><span class="line">  <span class="attr">username:</span> [<span class="string">username</span>]</span><br><span class="line">  <span class="attr">password:</span> [<span class="string">password</span>]</span><br><span class="line">  <span class="attr">ttl:</span> <span class="string">168h</span></span><br><span class="line"><span class="comment"># Docker 地址为 https://registry-1.docker.io, 按需配置。</span></span><br><span class="line"><span class="comment"># K8s: </span></span><br><span class="line"><span class="comment"># Quay:</span></span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+
+
+                        <h4 id="c-验证服务的可用性">
+                            <a href="#c-验证服务的可用性" class="headerlink" title="c. 验证服务的可用性"></a>c. 验证服务的可用性
+                        </h4>
+                        <p>此时可以跳转到 <a href="#%E4%B8%89%E3%80%81%E9%85%8D%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF">第三节</a> 配置客户端并且在确保网络连通性正常后进行验证。</p>
+                        <p>验证完成后，查看 registry 容器官网，无法镜像另外一个域。所以当需要同时代理缓存 <code>docker.io</code>、<code>quay.io</code> 时，就需要修改映射的端口和上游地址，启动新容器，对加速镜像分别进行缓存。</p>
+                        <h2 id="三、配置客户端">
+                            <a href="#三、配置客户端" class="headerlink" title="三、配置客户端"></a>三、配置客户端
+                        </h2>
+                        <h3 id="1-配置-Docker-镜像加速">
+                            <a href="#1-配置-Docker-镜像加速" class="headerlink" title="1. 配置 Docker 镜像加速"></a>1. 配置 Docker 镜像加速
+                        </h3>
+                        <p>针对 Linux 系统的配置方法。docker 仅支持对 docker.io 进行加速。</p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /etc/docker</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/docker/daemon.json &lt;&lt;-<span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://[镜像加速地址]&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"><span class="built_in">sudo</span> systemctl daemon-reload</span><br><span class="line"><span class="built_in">sudo</span> systemctl restart docker</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>如果 registry 加速地址配置了身份认证：</p>
+                        <p>（1）通过 <code>docker login &lt;PROXY.DOMAIN.COM&gt;</code> 命令登录，登录成功之后，会在对应的 $HOME 目录下生成 <code>.docker/config.json</code> 配置文件</p>
+                        <p>（2）修改配置文件，在 <code>auths</code> 配置块中添加官方地址 <code>https://index.docker.io/v1/</code>，<code>auth</code> 哈希值与代理镜像地址的 <code>auth</code> 一致，重启 Docker 服务，即可直接通过 <code>docker pull</code> 拉取镜像。</p>
+                        <figure class="highlight json">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;auths&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;https://index.docker.io/v1/&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;BASE64[USER:PASSWORD]&gt;&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;PROXY.DOMAIN.COM&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;BASE64[USER:PASSWORD]&gt;&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+
+
+                        <h3 id="2-配置-Containerd-镜像加速">
+                            <a href="#2-配置-Containerd-镜像加速" class="headerlink" title="2. 配置 Containerd 镜像加速"></a>2. 配置 Containerd 镜像加速
+                        </h3>
+                        <h4 id="a-指定配置目录">
+                            <a href="#a-指定配置目录" class="headerlink" title="a. 指定配置目录"></a>a. 指定配置目录
+                        </h4>
+                        <p>参考文档：<a target="_blank" rel="noopener" href="https://github.com/containerd/containerd/blob/main/docs/hosts.md">https://github.com/containerd/containerd/blob/main/docs/hosts.md</a>
+                        </p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line">sed <span class="string">&#x27;s#config_path.*#config_path = &quot;/etc/containerd/conf.d&quot;#g&#x27;</span> /etc/containerd/config.toml -i</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 registry.k8s.io、quay.io 同理</span></span><br><span class="line"><span class="built_in">mkdir</span> /etc/containerd/conf.d/docker.io -p</span><br><span class="line"><span class="built_in">cat</span> &gt; /etc/containerd/conf.d/docker.io/hosts.toml &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">server = &quot;https://docker.io&quot;</span></span><br><span class="line"><span class="string">[host.&quot;https://[镜像加速地址]&quot;]</span></span><br><span class="line"><span class="string">    capabilities = [&quot;pull&quot;, &quot;resolve&quot;]</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line">systemctl restart containerd.service</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>修改配置文件后，需要重启 containerd 服务。</p>
+                        <h4 id="b-配置基本身份验证">
+                            <a href="#b-配置基本身份验证" class="headerlink" title="b. 配置基本身份验证"></a>b. 配置基本身份验证
+                        </h4>
+                        <p>当开启了身份验证后，还需要针对客户端进行一些必要的配置。</p>
+                        <p>
+                            <strong>修改配置文件</strong>：
+                        </p>
+                        <p>参考文档：<a target="_blank" rel="noopener" href="https://github.com/containerd/containerd/blob/main/docs/cri/registry.md">https://github.com/containerd/containerd/blob/main/docs/cri/registry.md</a>
+                        </p>
+                        <figure class="highlight plaintext">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line">version = 2</span><br><span class="line">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry]</span><br><span class="line">  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.configs]</span><br><span class="line">    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.configs.&quot;gcr.io&quot;.auth]</span><br><span class="line">      username = &quot;_json_key&quot;</span><br><span class="line">      password = &#x27;paste output from jq&#x27;</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>重启 containerd 服务</p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line">systemctl restart containerd.service</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>
+                            <strong>使用命令行方式进行验证</strong>：
+                        </p>
+                        <figure class="highlight bash">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line"><span class="comment"># 使用 crictl 拉取镜像</span></span><br><span class="line">crictl pull --auth AUTH_STRING registry.k8s.io/pause:3.6</span><br><span class="line">crictl pull --creds USERNAME[:PASSWORD] registry.k8s.io/pause:3.6</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 ctr 拉取镜像</span></span><br><span class="line">ctr images pull --user USERNAME[:PASSWORD] --hosts-dir /etc/containerd/certs.d/ registry.k8s.io/pause:3.6</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+
+
+                        <p>以上验证完成后，就可以轻松获取镜像了。</p>
+                    </div>
+                    <div class="licensing">
+                        <div class="licensing-title">
+                            <p>通过 registry:2 加速国外镜像源</p>
+                            <a href="https://www.lihaicheng.com/page/registry/">https://www.lihaicheng.com/page/registry/</a>
+                        </div>
+                        <div class="licensing-meta">
+                            <div class="author">
+                                <h6>作者</h6>
+                                <p>白羊</p>
+                            </div>
+                            <div class="create-time">
+                                <h6>发布时间</h6>
+                                <p>2025-12-12</p>
+                            </div>
+                            <div class="update-time">
+                                <h6>更新时间</h6>
+                                <p>2025-12-12</p>
+                            </div>
+                            <div class="license">
+                                <h6>许可协议</h6>
+                                <p>
+                                    <a target="_blank" rel="noopener" href="https://creativecommons.org/" title="Creative Commons">
+                                        <img src="/images/cc.svg" alt="">
+                                    </a>
+                                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/" title="Attribution">
+                                        <img src="/images/by.svg" alt="">
+                                    </a>
+                                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0/" title="Noncommercial">
+                                        <img src="/images/nc.svg" alt="">
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="sidebar">
+                <div class="card profile">
+                    <img src="https://cravatar.cn/avatar/d0e94b8b1f46baf4397bcfadbc231ad2?s=128" style="clip-path:circle(50% at center);" onerror="this.style=&#039;&#039;">
+                    <h2 class="author">白羊</h2>
+                    <ul class="info">
+                        <li>
+                            <span>帖子</span>
+                            <a href="/archives">4</a>
+                        </li>
+                        <li>
+                            <span>分类</span>
+                            <a href="/categories">0</a>
+                        </li>
+                        <li>
+                            <span>标签</span>
+                            <a href="/tags">6</a>
+                        </li>
+                    </ul>
+                    <a class="follow-me" href="/rss">Forrow Me</a>
+                    <div class="social">
+                        <a target="_blank" rel="noopener"><ion-icon name="logo-github"></ion-icon></a>
+                        <a target="_blank" rel="noopener"><ion-icon name="logo-twitter"></ion-icon></a>
+                        <a target="_blank" rel="noopener" href="https://www.lihaicheng.com"><ion-icon name="logo-rss"></ion-icon></a>
+                        <a href="mailto:undefined"><ion-icon name="mail"></ion-icon></a>
+                    </div>
+                </div>
+                <div class="card side-archives">
+                    <h3 class="side-title">归档</h3>
+                    <div>
+                        <a class="archive-link" href="/archives/2025/02/">2月 2025<span class="archive-count">2</span>
+                        </a>
+                        <a class="archive-link" href="/archives/2025/01/">1月 2025<span class="archive-count">1</span>
+                        </a>
+                        <a class="archive-link" href="/archives/2023/11/">11月 2023<span class="archive-count">1</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="card side-categories">
+                    <h3 class="side-title">分类</h3>
+                    <div></div>
+                </div>
+                <div class="card side-tags">
+                    <h3 class="side-title">标签</h3>
+                    <div>
+                        <a class="tag-link" href="/tags/Containerd/" rel="tag">Containerd<span class="tag-count">1</span>
+                        </a>
+                        <a class="tag-link" href="/tags/Docker/" rel="tag">Docker<span class="tag-count">1</span>
+                        </a>
+                        <a class="tag-link" href="/tags/Kubernetes/" rel="tag">Kubernetes<span class="tag-count">1</span>
+                        </a>
+                        <a class="tag-link" href="/tags/Registry/" rel="tag">Registry<span class="tag-count">1</span>
+                        </a>
+                        <a class="tag-link" href="/tags/VSCode/" rel="tag">VSCode<span class="tag-count">1</span>
+                        </a>
+                        <a class="tag-link" href="/tags/code-server/" rel="tag">code-server<span class="tag-count">1</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+
+</html>

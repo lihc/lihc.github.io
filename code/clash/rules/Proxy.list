@@ -55,6 +55,9 @@ DOMAIN-SUFFIX,smsactivate.s3.eu-central-1.amazonaws.com
 # Sunshine
 DOMAIN-SUFFIX,lizardbyte.dev
 
+# supercell
+DOMAIN-SUFFIX,supercell.com
+
 # Typora
 DOMAIN-SUFFIX,typora.io
 

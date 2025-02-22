@@ -87,6 +87,35 @@
     margin-bottom: var(--base-size-16);
 }
 
+.markdown-body span[title] {
+    border-bottom: 1px dashed #000;
+    cursor: help;
+    position: relative;
+}
+
+/* 创建提示框 */
+span[title]::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+span[title]:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* 链接 a */
 .markdown-body a {
     background-color: transparent;
