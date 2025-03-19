@@ -61,92 +61,51 @@
             <div class="content" style="flex: 1;">
                 <article class="article card post">
                     <div class="metadata">
-                        <span><time dateTime="2024-12-31T16:00:00.000Z">2025-01-01</time>发表</span>
-                        <span>1 分钟读完 (大约123个字)</span>
+                        <span><time dateTime="2025-03-19T03:16:13.000Z">2025-03-19</time>发表</span>
+                        <span>2 分钟读完 (大约266个字)</span>
                     </div>
-                    <h1 class="post-title">Hello World</h1>
+                    <h1 class="post-title">解决 VSCode 扩展商店无 vsix 扩展下载按钮</h1>
                     <div class="markdown-body">
-                        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-                        <h2 id="Quick-Start">
-                            <a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start
-                        </h2>
-                        <h3 id="Create-a-new-post">
-                            <a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post
-                        </h3>
-                        <figure class="highlight bash">
-                            <table>
-                                <tr>
-                                    <td class="gutter">
-                                        <pre><span class="line">1</span><br></pre>
-                                    </td>
-                                    <td class="code">
-                                        <pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre>
-                                    </td>
-                                </tr>
-                            </table>
-                        </figure>
-
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a>
+                        <p>VSCode 扩展市场：<a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/">https://marketplace.visualstudio.com/</a>
                         </p>
-                        <h3 id="Run-server">
-                            <a href="#Run-server" class="headerlink" title="Run server"></a>Run server
-                        </h3>
-                        <figure class="highlight bash">
+                        <p>从 2025 年开始，访问 VSCode 扩展市场的扩展时，已经没有 vsix 扩展的下载按钮，官方扩展市场已经不提供下载离线包的方式了，实际上只是屏蔽了下载按钮，现在通过下载链接拼接的方式，仍然可以下载。</p>
+                        <figure class="highlight javascript">
+                            <table>
+                                <tr>
+                                    <td class="gutter">
+                                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre>
+                                    </td>
+                                    <td class="code">
+                                        <pre><span class="line"><span class="keyword">const</span> targetPlatform = <span class="string">&#x27;linux-x64&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> baseUrl = <span class="string">&#x27;https://marketplace.visualstudio.com/_apis/public/gallery&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> identifierElement = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#unique-identifier&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> versionElement = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#version&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> identifier = identifierElement.<span class="property">nextElementSibling</span>.<span class="property">innerText</span>.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> version = versionElement.<span class="property">nextElementSibling</span>.<span class="property">innerText</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> publisherId = identifier[<span class="number">0</span>];</span><br><span class="line"><span class="keyword">const</span> extensionId = identifier[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">const</span> path = <span class="string">`publishers/<span class="subst">$&#123;publisherId&#125;</span>/vsextensions/<span class="subst">$&#123;extensionId&#125;</span>/<span class="subst">$&#123;version&#125;</span>`</span>;</span><br><span class="line"><span class="keyword">const</span> queryParams = <span class="string">`targetPlatform=<span class="subst">$&#123;targetPlatform&#125;</span>`</span>;</span><br><span class="line"><span class="keyword">const</span> vsixUrl = <span class="string">`<span class="subst">$&#123;baseUrl&#125;</span>/<span class="subst">$&#123;path&#125;</span>/vspackage?<span class="subst">$&#123;queryParams&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;VSIX 下载地址:&#x27;</span>, vsixUrl);</span><br></pre>
+                                    </td>
+                                </tr>
+                            </table>
+                        </figure>
+
+                        <p>将以上代码通过 F12 打开控制台，输入即可获取下载链接。</p>
+                        <p>如果想要将下载按钮显示到页面当中，可以继续输入以下内容：</p>
+                        <figure class="highlight javascript">
                             <table>
                                 <tr>
                                     <td class="gutter">
                                         <pre><span class="line">1</span><br></pre>
                                     </td>
                                     <td class="code">
-                                        <pre><span class="line">$ hexo server</span><br></pre>
+                                        <pre><span class="line">[<span class="string">&#x27;win32-x64&#x27;</span>, <span class="string">&#x27;linux-x64&#x27;</span>, <span class="string">&#x27;darwin-x64&#x27;</span>, <span class="string">&#x27;web&#x27;</span>].<span class="title function_">forEach</span>(<span class="function"><span class="params">platform</span> =&gt;</span> <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.ux-section-resources ul&#x27;</span>).<span class="title function_">insertAdjacentHTML</span>(<span class="string">&#x27;beforeend&#x27;</span>, <span class="string">`&lt;li&gt;&lt;a href=&quot;<span class="subst">$&#123;baseUrl&#125;</span>/<span class="subst">$&#123;path&#125;</span>/vspackage?targetPlatform=<span class="subst">$&#123;platform&#125;</span>&quot;&gt;下载 (<span class="subst">$&#123;platform&#125;</span>)&lt;/a&gt;&lt;/li&gt;`</span>));</span><br></pre>
                                     </td>
                                 </tr>
                             </table>
                         </figure>
 
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a>
-                        </p>
-                        <h3 id="Generate-static-files">
-                            <a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files
-                        </h3>
-                        <figure class="highlight bash">
-                            <table>
-                                <tr>
-                                    <td class="gutter">
-                                        <pre><span class="line">1</span><br></pre>
-                                    </td>
-                                    <td class="code">
-                                        <pre><span class="line">$ hexo generate</span><br></pre>
-                                    </td>
-                                </tr>
-                            </table>
-                        </figure>
 
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a>
-                        </p>
-                        <h3 id="Deploy-to-remote-sites">
-                            <a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites
-                        </h3>
-                        <figure class="highlight bash">
-                            <table>
-                                <tr>
-                                    <td class="gutter">
-                                        <pre><span class="line">1</span><br></pre>
-                                    </td>
-                                    <td class="code">
-                                        <pre><span class="line">$ hexo deploy</span><br></pre>
-                                    </td>
-                                </tr>
-                            </table>
-                        </figure>
 
-                        <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a>
+                        <p>参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26003070992">知乎：2025 年 VSCode 插件离线下载攻略：官方渠道一键获取</a>
                         </p>
                     </div>
                     <div class="licensing">
                         <div class="licensing-title">
-                            <p>Hello World</p>
-                            <a href="https://www.lihaicheng.com/page/hello-world/">https://www.lihaicheng.com/page/hello-world/</a>
+                            <p>解决 VSCode 扩展商店无 vsix 扩展下载按钮</p>
+                            <a href="https://www.lihaicheng.com/page/vscode-vsix/">https://www.lihaicheng.com/page/vscode-vsix/</a>
                         </div>
                         <div class="licensing-meta">
                             <div class="author">
